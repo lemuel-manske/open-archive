@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Web interface for Open Archive.",
+  "description": "Web interface for OpenArchive.",
   "license": "MIT",
   "repository": {
     "type": "git",

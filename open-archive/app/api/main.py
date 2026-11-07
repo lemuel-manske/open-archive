@@ -24,7 +24,7 @@ async def lifespan(api: FastAPI) -> AsyncGenerator[None, None]:
 
 
 api = FastAPI(
-    title="Open Archive",
+    title="OpenArchive",
     lifespan=lifespan,
 )
 
