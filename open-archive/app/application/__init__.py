@@ -89,6 +89,12 @@ async def generate_wacz(
         raise
 
 
+async def list_captures(
+    app: Application, limit: int = 12, skip: int = 0
+) -> list[Capture]:
+    return await app.db.list_captures(limit=limit, skip=skip)
+
+
 async def stream_capture_archive(
     app: Application,
     capture_id: str,

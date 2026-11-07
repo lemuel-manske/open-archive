@@ -44,6 +44,16 @@ class MongoDatabase(Database):
         finally:
             await st.close()
 
+    async def list_captures(self, limit: int = 12, skip: int = 0) -> list[Capture]:
+        cursor = (
+            self.captures.find()
+            .sort("created_at", -1)
+            .skip(skip)
+            .limit(limit)
+        )
+
+        return [Capture(**doc) async for doc in cursor]
+
     async def claim_next_capture(self) -> Capture | None:
         doc = await self.captures.find_one_and_update(
             {"status": "pending"},
