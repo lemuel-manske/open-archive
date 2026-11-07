@@ -26,6 +26,16 @@ start-worker-dev:
 	$(PYTHON) -m app.worker.main
 
 
+config:
+	docker-compose config
+
+start:
+	docker-compose up -d --build
+
+stop:
+	docker-compose down
+
+
 test:
 	$(PYTHON) -m pytest -v --tb=short --disable-warnings --maxfail=1
 

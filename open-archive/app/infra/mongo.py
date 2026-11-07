@@ -7,7 +7,7 @@ from app.domain.models import Capture
 from app.domain.protocols import Database
 from bson.objectid import ObjectId
 from gridfs import AsyncGridFSBucket
-from pymongo import AsyncMongoClient
+from pymongo import AsyncMongoClient, ReturnDocument
 
 
 def get_mongo_database(client: AsyncMongoClient, db_name: str = "open-archive") -> Database:
@@ -58,6 +58,8 @@ class MongoDatabase(Database):
         doc = await self.captures.find_one_and_update(
             {"status": "pending"},
             {"$set": {"status": "running"}},
+            sort=[("created_at", 1)],
+            return_document=ReturnDocument.AFTER
         )
 
         if doc is None:

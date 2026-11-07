@@ -8,7 +8,8 @@ from app.domain.protocols import Crawler, Database
 
 class Application:
     db: Database
-    crawler: Crawler
+
+    crawler: Crawler | None = None
 
 
 def init_app(**kwargs):
@@ -18,7 +19,6 @@ def init_app(**kwargs):
     assert db is not None, "Database instance is required"
 
     crawler = kwargs.get("crawler")
-    assert crawler is not None, "Crawler instance is required"
 
     app.db = db
     app.crawler = crawler
@@ -49,6 +49,7 @@ async def get_capture(app: Application, capture_id: str) -> Capture | None:
     return await app.db.get_capture(capture_id)
 
 
+# just used for testing purposes, not exposed as an endpoint. See `worker`
 async def generate_wacz(
     app: Application,
     capture_id: str,
@@ -59,6 +60,8 @@ async def generate_wacz(
         raise LookupError(f"Capture not found: {capture_id}")
 
     await app.db.start_capture(capture_id)
+
+    assert app.crawler is not None, "Crawler instance is required"
 
     try:
         path = await asyncio.to_thread(
