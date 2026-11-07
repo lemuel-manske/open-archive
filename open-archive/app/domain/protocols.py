@@ -14,7 +14,14 @@ class Database(Protocol):
     Database contract.
     """
 
-    def stream_archive(self, file_id: str) -> AsyncIterator[bytes]: ...
+    async def get_archive_size(self, file_id: str) -> int: ...
+
+    def stream_archive(
+        self,
+        file_id: str,
+        start: int = 0,
+        end: int | None = None,
+    ) -> AsyncIterator[bytes]: ...
 
     async def list_captures(self, limit: int = 12, skip: int = 0) -> list[Capture]: ...
 

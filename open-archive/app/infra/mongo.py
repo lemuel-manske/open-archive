@@ -35,22 +35,39 @@ class MongoDatabase(Database):
         self.captures = self.db["captures"]
         self.files = AsyncGridFSBucket(self.db)
 
-    async def stream_archive(self, file_id: str) -> AsyncIterator[bytes]:
-        st = await self.files.open_download_stream(ObjectId(file_id))
+    async def get_archive_size(self, file_id: str) -> int:
+        stream = await self.files.open_download_stream(ObjectId(file_id))
+        try:
+            return stream.length
+        finally:
+            await stream.close()
+
+    async def stream_archive(
+        self,
+        file_id: str,
+        start: int = 0,
+        end: int | None = None,
+    ) -> AsyncIterator[bytes]:
+        stream = await self.files.open_download_stream(ObjectId(file_id))
 
         try:
-            while chunk := await st.read(256 * 1024):
+            await stream.seek(start)
+
+            remaining = stream.length - start if end is None else end - start + 1
+
+            while remaining > 0:
+                chunk = await stream.read(min(256 * 1024, remaining))
+
+                if not chunk:
+                    break
+
                 yield chunk
+                remaining -= len(chunk)
         finally:
-            await st.close()
+            await stream.close()
 
     async def list_captures(self, limit: int = 12, skip: int = 0) -> list[Capture]:
-        cursor = (
-            self.captures.find()
-            .sort("created_at", -1)
-            .skip(skip)
-            .limit(limit)
-        )
+        cursor = self.captures.find().sort("created_at", -1).skip(skip).limit(limit)
 
         return [Capture(**doc) async for doc in cursor]
 
@@ -59,7 +76,7 @@ class MongoDatabase(Database):
             {"status": "pending"},
             {"$set": {"status": "running"}},
             sort=[("created_at", 1)],
-            return_document=ReturnDocument.AFTER
+            return_document=ReturnDocument.AFTER,
         )
 
         if doc is None:

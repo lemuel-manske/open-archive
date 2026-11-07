@@ -6,7 +6,6 @@ from app.infra.browsertrix import get_browsertrix_crawler
 from app.infra.docker import get_docker_client
 from app.infra.mongo import get_mongo_client, get_mongo_database
 
-
 logger = logging.getLogger(__name__)
 
 

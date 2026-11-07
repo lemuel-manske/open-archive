@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from app.domain.protocols import CRAWLS_PATH, CRAWLS_VOLUME, Crawler
+
 from docker import DockerClient
 
 IMAGE = "webrecorder/browsertrix-crawler"

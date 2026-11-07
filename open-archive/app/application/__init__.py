@@ -92,23 +92,27 @@ async def generate_wacz(
         raise
 
 
-async def list_captures(
-    app: Application, limit: int = 12, skip: int = 0
-) -> list[Capture]:
+async def list_captures(app: Application, limit: int = 12, skip: int = 0) -> list[Capture]:
     return await app.db.list_captures(limit=limit, skip=skip)
 
 
 async def stream_capture_archive(
     app: Application,
     capture_id: str,
+    start: int = 0,
+    end: int | None = None,
 ) -> AsyncIterator[bytes]:
     capture = await app.db.get_capture(capture_id)
 
     if capture is None:
-        raise LookupError(f"Capture not found: {capture_id}")
+        raise LookupError(capture_id)
 
     if capture.archive_file_id is None:
-        raise RuntimeError("Capture has no archived file")
+        raise RuntimeError("Archive not available")
 
-    async for chunk in app.db.stream_archive(capture.archive_file_id):
+    async for chunk in app.db.stream_archive(
+        capture.archive_file_id,
+        start=start,
+        end=end,
+    ):
         yield chunk
