@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Protocol
+from typing import AsyncIterator, Protocol
 
 from app.models import Capture
 
@@ -13,6 +13,8 @@ class Database(Protocol):
     """
     Database contract.
     """
+
+    def stream_archive(self, file_id: str) -> AsyncIterator[bytes]: ...
 
     async def start_capture(self, capture_id: str) -> None: ...
 

@@ -1,7 +1,9 @@
 from dataclasses import asdict
 import os
 from pathlib import Path
+from typing import AsyncIterator
 
+from bson.objectid import ObjectId
 from gridfs import AsyncGridFSBucket
 from pymongo import AsyncMongoClient
 
@@ -33,6 +35,17 @@ class MongoDatabase(Database):
 
         self.captures = self.db["captures"]
         self.files = AsyncGridFSBucket(self.db)
+
+    async def stream_archive(self, file_id: str) -> AsyncIterator[bytes]:
+        st = await self.files.open_download_stream(
+            ObjectId(file_id)
+        )
+
+        try:
+            while chunk := await st.read(256 * 1024):
+                yield chunk
+        finally:
+            await st.close()
 
     async def start_capture(self, capture_id: str) -> None:
         result = await self.captures.update_one(

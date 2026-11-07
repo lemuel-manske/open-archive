@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime, timezone
+from collections.abc import AsyncIterator
 
 from app.models import Capture
 from app.protocols import Crawler, Database
@@ -86,3 +87,21 @@ async def generate_wacz(
             str(exc),
         )
         raise
+
+
+async def stream_capture_archive(
+    app: Application,
+    capture_id: str,
+) -> AsyncIterator[bytes]:
+    capture = await app.db.get_capture(capture_id)
+
+    if capture is None:
+        raise LookupError(f"Capture not found: {capture_id}")
+
+    if capture.archive_file_id is None:
+        raise RuntimeError("Capture has no archived file")
+
+    async for chunk in app.db.stream_archive(
+        capture.archive_file_id
+    ):
+        yield chunk

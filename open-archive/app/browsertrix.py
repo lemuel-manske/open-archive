@@ -43,6 +43,7 @@ class BrowsertrixCrawler(Crawler):
 
         path =  CRAWLS_PATH / "collections" / fname / f"{fname}.wacz"
 
-        assert path.is_file(), f"WACZ file not found at {path}"
+        if not path.is_file():
+            raise FileNotFoundError(f"WACZ file not found at {path}")
 
         return path
