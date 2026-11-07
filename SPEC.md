@@ -34,22 +34,6 @@ Develop a web-based platform for archiving, versioning, and retrieving websites 
 - Support indexed temporal queries.
 - Demonstrate document-oriented modeling, compound indexes, and aggregation pipelines.
 
-## MVP Scope
-
-- Public URL archiving.
-- Configurable crawling depth (initially 0–2).
-- Maximum page count per capture.
-- WACZ generation and MongoDB persistence.
-- Offline archive retrieval and replay.
-- Capture history and version management.
-
-## Future Enhancements
-
-- Authenticated website archiving.
-- Scheduled recaptures.
-- Snapshot comparison and change detection.
-- Full-text search across archived content.
-
 ## Final Demonstration
 
 1. Deploy a small website containing multiple interconnected pages.
