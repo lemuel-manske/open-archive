@@ -6,11 +6,19 @@ import { ReplayViewer } from "./components/ReplayViewer";
 import { useCaptures } from "./hooks/useCaptures";
 
 export default function App() {
-  const { captures, loading, creating, error, refresh, submit } = useCaptures();
+  const { captures, loading, creating, deletingId, error, refresh, submit, remove } = useCaptures();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selected = captures.find((capture) => capture._id === selectedId);
+
+  async function handleDelete(id: string): Promise<boolean> {
+    const deleted = await remove(id);
+
+    if (deleted && selectedId === id) setSelectedId(null);
+
+    return deleted;
+  }
 
   return (
     <div className="site-shell">
@@ -64,6 +72,8 @@ export default function App() {
           loading={loading}
           selectedId={selectedId}
           onSelect={setSelectedId}
+          deletingId={deletingId}
+          onDelete={handleDelete}
         />
 
         {selected?.status === "completed" && (

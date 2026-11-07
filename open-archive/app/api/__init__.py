@@ -136,6 +136,17 @@ async def create_capture(data: CaptureRequest, app: App):
     }
 
 
+@router.delete("/{capture_id}", status_code=204)
+async def delete_capture(capture_id: str, app: App):
+    try:
+        deleted = await oa.delete_capture(app, capture_id)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Capture not found")
+
+
 @router.get("/{capture_id}")
 async def get_capture(capture_id: str, app: App):
     capture = await oa.get_capture(app, capture_id)

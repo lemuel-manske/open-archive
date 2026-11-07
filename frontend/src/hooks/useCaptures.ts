@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { createCapture, listCaptures } from "../lib/api";
+import { createCapture, deleteCapture, listCaptures } from "../lib/api";
 import type { Capture, CaptureRequest } from "../types/capture";
 
 export function useCaptures() {
@@ -11,6 +11,7 @@ export function useCaptures() {
   const [creating, setCreating] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
     try {
@@ -63,5 +64,25 @@ export function useCaptures() {
     [refresh],
   );
 
-  return { captures, loading, creating, error, refresh, submit };
+  const remove = useCallback(async (id: string) => {
+    setDeletingId(id);
+
+    setError(null);
+
+    try {
+      await deleteCapture(id);
+
+      setCaptures((current) => current.filter((capture) => capture._id !== id));
+
+      return true;
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : String(cause));
+
+      return false;
+    } finally {
+      setDeletingId(null);
+    }
+  }, []);
+
+  return { captures, loading, creating, deletingId, error, refresh, submit, remove };
 }

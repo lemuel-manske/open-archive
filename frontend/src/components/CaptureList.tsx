@@ -1,9 +1,10 @@
+import { useState } from "react";
+
 import { archiveUrl } from "../lib/api";
 import { formatDate } from "../lib/dates";
-
 import type { Capture, CaptureStatus } from "../types/capture";
 
-const statusLabelsMap: Record<CaptureStatus, string> = {
+const statusLabels: Record<CaptureStatus, string> = {
   pending: "Pendente",
   running: "Capturando",
   completed: "Concluída",
@@ -14,104 +15,159 @@ interface Properties {
   captures: Capture[];
   loading: boolean;
   selectedId: string | null;
-
+  deletingId: string | null;
   onSelect: (id: string) => void;
+  onDelete: (id: string) => Promise<boolean>;
 }
 
-export function CaptureList({ captures, loading, selectedId, onSelect }: Properties) {
-  const renderLoadingHistory = () => {
-    return (
-      <p className="empty-state" role="status">
-        Carregando histórico...
-      </p>
-    );
-  };
+interface CaptureGroup {
+  url: string;
+  versions: Capture[];
+}
 
-  const renderEmptyHistory = () => {
-    return <p className="empty-state">Ainda não há capturas. Comece arquivando uma URL.</p>;
-  };
+function groupCaptures(captures: Capture[]): CaptureGroup[] {
+  const groups = new Map<string, Capture[]>();
 
-  const renderCaptureStatus = (capture: Capture) => {
+  for (const capture of captures) {
+    const versions = groups.get(capture.url) ?? [];
+    versions.push(capture);
+    groups.set(capture.url, versions);
+  }
+
+  return Array.from(groups, ([url, versions]) => ({
+    url,
+    versions: versions.sort((a, b) => b.created_at.localeCompare(a.created_at)),
+  })).sort((a, b) => b.versions[0].created_at.localeCompare(a.versions[0].created_at));
+}
+
+export function CaptureList({
+  captures,
+  loading,
+  selectedId,
+  deletingId,
+  onSelect,
+  onDelete,
+}: Properties) {
+  const [expanded, setExpanded] = useState<string[]>([]);
+  const groups = groupCaptures(captures);
+
+  function toggleGroup(url: string) {
+    setExpanded((current) => current.includes(url)
+      ? current.filter((item) => item !== url)
+      : [...current, url]);
+  }
+
+  async function handleDelete(capture: Capture) {
+    if (!window.confirm(
+      `Excluir a captura de ${formatDate(capture.created_at)}? O WACZ será removido permanentemente.`
+    )) {
+      return;
+    }
+
+    await onDelete(capture._id);
+  }
+
+  function renderStatus(capture: Capture) {
     return (
       <span className={`status status-${capture.status}`}>
         <span className="status-dot" aria-hidden="true" />
-
-        {statusLabelsMap[capture.status]}
+        {statusLabels[capture.status]}
       </span>
     );
-  };
+  }
 
-  const renderCaptureInfo = (capture: Capture) => {
+  function renderActions(capture: Capture) {
+    const completed = capture.status === "completed";
+
     return (
-      <div className="capture-info">
-        {renderCaptureStatus(capture)}
+      <div className="capture-actions">
+        {completed && (
+          <>
+            <button
+              className={`button button-secondary${selectedId === capture._id ? " is-selected" : ""}`}
+              onClick={() => onSelect(capture._id)}
+              aria-pressed={selectedId === capture._id}
+            >
+              Reproduzir
+            </button>
 
-        <span className="capture-date">{formatDate(capture.created_at)}</span>
-
-        <div className="capture-url" title={capture.url}>
-          {capture.url}
-        </div>
-
-        <div className="capture-meta">
-          Profundidade {capture.depth} · Limite {capture.limit}
-        </div>
-
-        {capture.error && <p className="capture-error">{capture.error}</p>}
+            <a className="button button-ghost" href={archiveUrl(capture._id)} download>
+              WACZ
+            </a>
+          </>
+        )}
+        <button
+          className="button button-danger"
+          onClick={() => void handleDelete(capture)}
+          disabled={capture.status === "running" || deletingId !== null}
+          title={capture.status === "running" ? "Aguarde o término da captura" : "Excluir versão"}
+        >
+          {deletingId === capture._id ? "Excluindo..." : "Excluir"}
+        </button>
       </div>
     );
-  };
+  }
 
-  const renderCaptureActions = (capture: Capture) => {
-    if (capture.status !== "completed") {
-      return (
-        <span className="capture-wait">{capture.status === "failed" ? "—" : "Aguardando"}</span>
-      );
-    }
-
-    const isSelected = selectedId === capture._id;
-
-    return (
-      <>
-        <button
-          className={`button button-secondary${isSelected ? " is-selected" : ""}`}
-          aria-pressed={isSelected}
-          onClick={() => onSelect(capture._id)}
-        >
-          Reproduzir
-        </button>
-
-        <a className="button button-ghost" href={archiveUrl(capture._id)} download>
-          WACZ
-        </a>
-      </>
-    );
-  };
-
-  const renderCaptureItem = (capture: Capture) => {
+  function renderVersion(capture: Capture) {
     return (
       <li className="capture-item" key={capture._id}>
-        {renderCaptureInfo(capture)}
+        <div className="capture-info">
+          {renderStatus(capture)}
 
-        <div className="capture-actions">{renderCaptureActions(capture)}</div>
+          <time className="capture-date" dateTime={capture.created_at}>
+            {formatDate(capture.created_at)}
+          </time>
+
+          <div className="capture-meta">
+            Profundidade {capture.depth} · Limite {capture.limit}
+          </div>
+
+          {capture.error && <p className="capture-error">{capture.error}</p>}
+        </div>
+
+        {renderActions(capture)}
       </li>
     );
-  };
+  }
 
-  const renderCaptureList = () => {
-    return <ul className="capture-list">{captures.map(renderCaptureItem)}</ul>;
-  };
+  function renderGroup(group: CaptureGroup) {
+    const open = expanded.includes(group.url);
 
-  const renderPanelBody = () => {
+    const newest = group.versions[0];
+
+    return (
+      <li className="capture-group" key={group.url}>
+        <button
+          className="capture-group-header"
+          onClick={() => toggleGroup(group.url)}
+          aria-expanded={open}
+        >
+          <span className="capture-group-title" title={group.url}>{group.url}</span>
+
+          <span className="capture-group-summary">
+            {group.versions.length} {group.versions.length === 1 ? "versão" : "versões"}
+            Última captura: {formatDate(newest.created_at)}
+          </span>
+
+          <span className="capture-group-chevron" aria-hidden="true">{open ? "−" : "+"}</span>
+        </button>
+
+        {open && <ul className="capture-versions">{group.versions.map(renderVersion)}</ul>}
+      </li>
+    );
+  }
+
+  function renderBody() {
     if (loading && captures.length === 0) {
-      return renderLoadingHistory();
+      return <p className="empty-state" role="status">Carregando histórico...</p>;
     }
 
-    if (captures.length === 0) {
-      return renderEmptyHistory();
+    if (groups.length === 0) {
+      return <p className="empty-state">Ainda não há capturas. Comece arquivando uma URL.</p>;
     }
 
-    return renderCaptureList();
-  };
+    return <ul className="capture-groups">{groups.map(renderGroup)}</ul>;
+  }
 
   return (
     <section className="panel" aria-labelledby="history-title">
@@ -119,15 +175,17 @@ export function CaptureList({ captures, loading, selectedId, onSelect }: Propert
         <div>
           <span className="eyebrow">Biblioteca</span>
 
-          <h2 id="history-title">Histórico de capturas</h2>
+          <h2 id="history-title">Sites arquivados</h2>
+
+          <p>Expanda um site para consultar e gerenciar suas versões.</p>
         </div>
 
-        <span className="counter" aria-label={`${captures.length} capturas carregadas`}>
-          {captures.length}
+        <span className="counter" aria-label={`${groups.length} sites carregados`}>
+          {groups.length}
         </span>
       </div>
 
-      {renderPanelBody()}
+      {renderBody()}
     </section>
   );
 }

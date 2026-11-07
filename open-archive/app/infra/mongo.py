@@ -119,6 +119,21 @@ class MongoDatabase(Database):
         doc["_id"] = doc.pop("_id")
         return Capture(**doc)
 
+    async def delete_capture(self, capture_id: str) -> bool:
+        capture = await self.captures.find_one_and_delete(
+            {"_id": capture_id, "status": {"$in": ["pending", "completed", "failed"]}}
+        )
+
+        if capture is None:
+            if await self.captures.find_one({"_id": capture_id}) is not None:
+                raise RuntimeError("Cannot delete a running capture")
+            return False
+
+        if capture.get("archive_file_id"):
+            await self.files.delete(ObjectId(capture["archive_file_id"]))
+
+        return True
+
     async def save_archive(self, capture_id: str, file: Path) -> str:
         with file.open("rb") as stream:
             file_id = await self.files.upload_from_stream(

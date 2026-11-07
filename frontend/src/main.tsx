@@ -5,6 +5,7 @@ import App from "./App";
 
 import "./styles/global.css";
 import "./styles/app.css";
+import "./styles/versions.css";
 
 const root = document.getElementById("root");
 

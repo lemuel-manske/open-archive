@@ -49,6 +49,10 @@ async def get_capture(app: Application, capture_id: str) -> Capture | None:
     return await app.db.get_capture(capture_id)
 
 
+async def delete_capture(app: Application, capture_id: str) -> bool:
+    return await app.db.delete_capture(capture_id)
+
+
 # just used for testing purposes, not exposed as an endpoint. See `worker`
 async def generate_wacz(
     app: Application,

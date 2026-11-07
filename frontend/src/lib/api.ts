@@ -26,6 +26,14 @@ export async function createCapture(data: CaptureRequest): Promise<CaptureAccept
   return (await assertOk(response)).json() as Promise<CaptureAccepted>;
 }
 
+export async function deleteCapture(id: string): Promise<void> {
+  const response = await fetch(`${CAPTURES_ENDPOINT}/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+
+  await assertOk(response);
+}
+
 export function archiveUrl(id: string): string {
-  return `${CAPTURES_ENDPOINT}/${encodeURIComponent(id)}`;
+  return `${CAPTURES_ENDPOINT}/${encodeURIComponent(id)}/archive`;
 }
