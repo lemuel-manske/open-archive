@@ -34,6 +34,15 @@ class MongoDatabase(Database):
         self.captures = self.db["captures"]
         self.files = AsyncGridFSBucket(self.db)
 
+    async def start_capture(self, capture_id: str) -> None:
+        result = await self.captures.update_one(
+            {"_id": capture_id, "status": "pending"},
+            {"$set": {"status": "running"}},
+        )
+
+        if result.modified_count != 1:
+            raise RuntimeError("Capture is not pending")
+
     async def create_capture(self, capture: Capture) -> None:
         doc = asdict(capture)
         doc["_id"] = doc.pop("_id")

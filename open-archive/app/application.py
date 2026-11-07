@@ -1,5 +1,5 @@
+import asyncio
 from datetime import datetime, timezone
-from pathlib import Path
 
 from app.models import Capture
 from app.protocols import Crawler, Database
@@ -51,13 +51,38 @@ async def get_capture(app: Application, capture_id: str) -> Capture | None:
 async def generate_wacz(
     app: Application,
     capture_id: str,
-) -> Path:
+) -> str:
     capture = await app.db.get_capture(capture_id)
 
-    assert capture is not None, f"Capture with ID {capture_id} not found"
+    if capture is None:
+        raise LookupError(f"Capture not found: {capture_id}")
 
-    url = capture.url
-    depth = capture.depth
-    limit = capture.limit
+    await app.db.start_capture(capture_id)
 
-    return app.crawler.generate_wacz(url, depth, limit)
+    try:
+        path = await asyncio.to_thread(
+            app.crawler.generate_wacz,
+            capture._id,
+            capture.url,
+            capture.depth,
+            capture.limit,
+        )
+
+        file_id = await app.db.save_archive(
+            capture_id,
+            path,
+        )
+
+        await app.db.complete_capture(
+            capture_id,
+            file_id,
+        )
+
+        return file_id
+
+    except Exception as exc:
+        await app.db.fail_capture(
+            capture_id,
+            str(exc),
+        )
+        raise
