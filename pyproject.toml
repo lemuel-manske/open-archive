@@ -8,3 +8,24 @@ name = "open-archive"
 version = "0.1.0"
 description = "A time machine for your digital life"
 requires-python = ">=3.12"
+
+
+[project.optional-dependencies]
+dev = ["ruff", "pyright"]
+app = ["docker"]
+
+
+[tool.setuptools.packages.find]
+where = ["open-archive"]
+
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["open-archive"]
+combine-as-imports = true
+force-sort-within-sections = true
