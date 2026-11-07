@@ -20,7 +20,7 @@ install:
 
 
 start:
-	$(PYTHON) -m open-archive.app
+	$(PYTHON) -m uvicorn app.__main__:api --app-dir open-archive --reload
 
 
 test:
