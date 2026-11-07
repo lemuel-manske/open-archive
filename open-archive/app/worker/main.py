@@ -18,6 +18,13 @@ async def worker(db: Database, crawler: Crawler) -> None:
             continue
 
         try:
+            logger.info(
+                "Starting capture id=%s url=%s attempt=%s",
+                capture._id,
+                capture.url,
+                capture.attempts,
+            )
+
             path = await asyncio.to_thread(
                 crawler.generate_wacz,
                 capture._id,
