@@ -1,4 +1,5 @@
 import { archiveUrl } from "../lib/api";
+import { formatDate } from "../lib/dates";
 import type { Capture, CaptureStatus } from "../types/capture";
 
 interface Props {
@@ -14,12 +15,6 @@ const statusLabels: Record<CaptureStatus, string> = {
   completed: "Concluída",
   failed: "Falhou",
 };
-
-function formatDate(date: string): string {
-  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(
-    new Date(date),
-  );
-}
 
 export function CaptureList({ captures, loading, selectedId, onSelect }: Props) {
   return (
