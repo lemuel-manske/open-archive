@@ -11,7 +11,10 @@ ifneq (,$(wildcard .env))
 endif
 
 
-.PHONY: init
+.PHONY: install
+.PHONY: start-fastapi-dev start-worker-dev
+.PHONY: config start stop restart
+.PHONY: test
 .PHONY: typecheck lint format format-check check
 
 
@@ -30,10 +33,14 @@ config:
 	docker-compose config
 
 start:
-	docker-compose up -d --build
+	docker-compose up -d
 
 stop:
 	docker-compose down
+
+restart:
+	docker-compose down
+	docker-compose up -d --build
 
 
 test:
