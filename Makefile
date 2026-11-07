@@ -23,6 +23,10 @@ start:
 	$(PYTHON) -m open-archive.app
 
 
+test:
+	$(PYTHON) -m pytest -v --tb=short --disable-warnings --maxfail=1
+
+
 typecheck:
 	$(PYTHON) -m pyright
 

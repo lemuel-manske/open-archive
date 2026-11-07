@@ -1,7 +1,7 @@
 {
-  "include": ["src"],
+  "include": ["open-archive/app", "tests"],
 
-  "extraPaths": ["src"],
+  "extraPaths": ["open-archive"],
 
   "venvPath": ".",
   "venv": ".venv",
