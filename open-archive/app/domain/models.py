@@ -27,3 +27,7 @@ class Capture:
     _id: str = field(
         default_factory=new_capture_id, init=True
     )  # allow setting _id on creation, but not on update
+
+    attempts: int = 0
+    started_at: datetime | None = None
+    completed_at: datetime | None = None

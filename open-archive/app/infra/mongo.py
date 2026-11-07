@@ -1,4 +1,5 @@
 from dataclasses import asdict
+from datetime import datetime, timezone
 import os
 from pathlib import Path
 from typing import AsyncIterator
@@ -72,18 +73,27 @@ class MongoDatabase(Database):
         return [Capture(**doc) async for doc in cursor]
 
     async def claim_next_capture(self) -> Capture | None:
+        now = datetime.now(timezone.utc)
+
         doc = await self.captures.find_one_and_update(
-            {"status": "pending"},
-            {"$set": {"status": "running"}},
+            {
+                "status": "pending",
+            },
+            {
+                "$set": {
+                    "status": "running",
+                    "started_at": now,
+                    "error": None,
+                },
+                "$inc": {
+                    "attempts": 1,
+                },
+            },
             sort=[("created_at", 1)],
             return_document=ReturnDocument.AFTER,
         )
 
-        if doc is None:
-            return None
-
-        doc["_id"] = doc.pop("_id")
-        return Capture(**doc)
+        return Capture(**doc) if doc else None
 
     async def start_capture(self, capture_id: str) -> None:
         result = await self.captures.update_one(
