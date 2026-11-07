@@ -19,6 +19,10 @@ install:
 	$(PYTHON) -m pip install -e '.[$(EXTRAS)]'
 
 
+start:
+	$(PYTHON) -m open-archive.app
+
+
 typecheck:
 	$(PYTHON) -m pyright
 

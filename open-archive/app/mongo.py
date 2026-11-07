@@ -1,0 +1,89 @@
+from dataclasses import asdict
+import os
+from pathlib import Path
+
+from gridfs import AsyncGridFSBucket
+from pymongo import AsyncMongoClient
+
+from app.models import Capture
+from app.protocols import Database
+
+
+def get_mongo_database(client: AsyncMongoClient, db_name: str = "open-archive") -> Database:
+    return MongoDatabase(client, db_name)
+
+
+def get_mongo_client() -> AsyncMongoClient:
+    uri = os.environ.get("MONGO_URI")
+
+    assert uri is not None, "MONGO_URI environment variable is not set"
+
+    return AsyncMongoClient(uri)
+
+
+class MongoDatabase(Database):
+    """
+    MongoDB implementation of the Database contract.
+    """
+
+    def __init__(self, client: AsyncMongoClient, db_name: str):
+        self.client = client
+
+        self.db = client[db_name]
+
+        self.captures = self.db["captures"]
+        self.files = AsyncGridFSBucket(self.db)
+
+    async def create_capture(self, capture: Capture) -> None:
+        doc = asdict(capture)
+        doc["_id"] = doc.pop("_id")
+
+        await self.captures.insert_one(doc)
+
+    async def get_capture(self, capture_id: str) -> Capture | None:
+        doc = await self.captures.find_one({"_id": capture_id})
+
+        if doc is None:
+            return None
+
+        doc["_id"] = doc.pop("_id")
+        return Capture(**doc)
+
+    async def save_archive(self, capture_id: str, file: Path) -> str:
+        with file.open("rb") as stream:
+            file_id = await self.files.upload_from_stream(
+                file.name,
+                stream,
+                metadata={"capture_id": capture_id},
+            )
+
+        return str(file_id)
+
+    async def complete_capture(self, capture_id: str, file_id: str) -> None:
+        result = await self.captures.update_one(
+            {"_id": capture_id},
+            {
+                "$set": {
+                    "status": "completed",
+                    "archive_file_id": file_id,
+                    "error": None,
+                }
+            },
+        )
+
+        if result.matched_count == 0:
+            raise LookupError(capture_id)
+
+    async def fail_capture(self, capture_id: str, error: str) -> None:
+        result = await self.captures.update_one(
+            {"_id": capture_id},
+            {
+                "$set": {
+                    "status": "failed",
+                    "error": error,
+                }
+            },
+        )
+
+        if result.matched_count == 0:
+            raise LookupError(capture_id)
