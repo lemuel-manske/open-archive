@@ -1,9 +1,9 @@
 import asyncio
-from datetime import datetime, timezone
 from collections.abc import AsyncIterator
+from datetime import datetime, timezone
 
-from app.models import Capture
-from app.protocols import Crawler, Database
+from app.domain.models import Capture
+from app.domain.protocols import Crawler, Database
 
 
 class Application:
@@ -101,7 +101,5 @@ async def stream_capture_archive(
     if capture.archive_file_id is None:
         raise RuntimeError("Capture has no archived file")
 
-    async for chunk in app.db.stream_archive(
-        capture.archive_file_id
-    ):
+    async for chunk in app.db.stream_archive(capture.archive_file_id):
         yield chunk

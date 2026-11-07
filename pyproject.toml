@@ -20,7 +20,7 @@ where = ["open-archive"]
 
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["open-archive/tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 

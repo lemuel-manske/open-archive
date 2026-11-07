@@ -1,12 +1,11 @@
 from pathlib import Path
 from zipfile import ZipFile
 
+import app.application as oa
+from app.infra.browsertrix import get_browsertrix_crawler
+from app.infra.docker import get_docker_client
+from app.infra.mongo import get_mongo_client, get_mongo_database
 import pytest
-
-import app.application as application
-from app.browsertrix import get_browsertrix_crawler
-from app.docker import get_docker_client
-from app.mongo import get_mongo_client, get_mongo_database
 
 
 @pytest.mark.asyncio
@@ -15,25 +14,25 @@ async def test_capture_end_to_end(tmp_path: Path):
     docker = get_docker_client()
 
     try:
-        app = application.init_app(
+        app = oa.init_app(
             db=get_mongo_database(mongo),
             crawler=get_browsertrix_crawler(docker),
         )
 
         # Use um site de teste acessível ao crawler.
-        capture = await application.request_capture(
+        capture = await oa.request_capture(
             app,
             url="https://example.org/",
             depth=0,
             limit=1,
         )
 
-        file_id = await application.generate_wacz(
+        file_id = await oa.generate_wacz(
             app,
             capture._id,
         )
 
-        saved = await application.get_capture(
+        saved = await oa.get_capture(
             app,
             capture._id,
         )
@@ -45,19 +44,14 @@ async def test_capture_end_to_end(tmp_path: Path):
         recovered = tmp_path / "recovered.wacz"
 
         with recovered.open("wb") as output:
-            async for chunk in application.stream_capture_archive(
-                app, capture._id
-            ):
+            async for chunk in oa.stream_capture_archive(app, capture._id):
                 output.write(chunk)
 
         assert recovered.stat().st_size > 0
 
         with ZipFile(recovered) as archive:
             assert archive.testzip() is None
-            assert any(
-                name.endswith(".warc.gz")
-                for name in archive.namelist()
-            )
+            assert any(name.endswith(".warc.gz") for name in archive.namelist())
 
     finally:
         await mongo.close()

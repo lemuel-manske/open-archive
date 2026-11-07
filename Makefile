@@ -19,8 +19,11 @@ install:
 	$(PYTHON) -m pip install -e '.[$(EXTRAS)]'
 
 
-start:
-	$(PYTHON) -m uvicorn app.__main__:api --app-dir open-archive --reload
+start-fastapi-dev:
+	$(PYTHON) -m uvicorn app.api.main:api --app-dir open-archive --reload --reload-dir open-archive/app
+
+start-worker-dev:
+	$(PYTHON) -m app.worker.main
 
 
 test:

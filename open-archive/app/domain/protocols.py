@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import AsyncIterator, Protocol
 
-from app.models import Capture
+from .models import Capture
 
 CRAWLS_PATH = Path(os.getenv("CRAWLS_PATH", "./crawls"))
 
@@ -15,6 +15,8 @@ class Database(Protocol):
     """
 
     def stream_archive(self, file_id: str) -> AsyncIterator[bytes]: ...
+
+    async def claim_next_capture(self) -> Capture | None: ...
 
     async def start_capture(self, capture_id: str) -> None: ...
 

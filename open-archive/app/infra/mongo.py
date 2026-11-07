@@ -3,12 +3,11 @@ import os
 from pathlib import Path
 from typing import AsyncIterator
 
+from app.domain.models import Capture
+from app.domain.protocols import Database
 from bson.objectid import ObjectId
 from gridfs import AsyncGridFSBucket
 from pymongo import AsyncMongoClient
-
-from app.models import Capture
-from app.protocols import Database
 
 
 def get_mongo_database(client: AsyncMongoClient, db_name: str = "open-archive") -> Database:
@@ -37,15 +36,25 @@ class MongoDatabase(Database):
         self.files = AsyncGridFSBucket(self.db)
 
     async def stream_archive(self, file_id: str) -> AsyncIterator[bytes]:
-        st = await self.files.open_download_stream(
-            ObjectId(file_id)
-        )
+        st = await self.files.open_download_stream(ObjectId(file_id))
 
         try:
             while chunk := await st.read(256 * 1024):
                 yield chunk
         finally:
             await st.close()
+
+    async def claim_next_capture(self) -> Capture | None:
+        doc = await self.captures.find_one_and_update(
+            {"status": "pending"},
+            {"$set": {"status": "running"}},
+        )
+
+        if doc is None:
+            return None
+
+        doc["_id"] = doc.pop("_id")
+        return Capture(**doc)
 
     async def start_capture(self, capture_id: str) -> None:
         result = await self.captures.update_one(

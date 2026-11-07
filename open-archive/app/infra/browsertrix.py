@@ -1,8 +1,7 @@
 from pathlib import Path
 
+from app.domain.protocols import CRAWLS_PATH, CRAWLS_VOLUME, Crawler
 from docker import DockerClient
-
-from app.protocols import CRAWLS_PATH, CRAWLS_VOLUME, Crawler
 
 IMAGE = "webrecorder/browsertrix-crawler"
 
@@ -41,7 +40,7 @@ class BrowsertrixCrawler(Crawler):
             remove=True,
         )
 
-        path =  CRAWLS_PATH / "collections" / fname / f"{fname}.wacz"
+        path = CRAWLS_PATH / "collections" / fname / f"{fname}.wacz"
 
         if not path.is_file():
             raise FileNotFoundError(f"WACZ file not found at {path}")

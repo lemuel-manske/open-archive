@@ -3,18 +3,16 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
-import app.application as application
-from app.application import Application
-
+import app.application as oa
 
 router = APIRouter(prefix="/captures", tags=["captures"])
 
 
-def get_application(request: Request) -> Application:
+def get_application(request: Request) -> oa.Application:
     return request.app.state.application
 
 
-App = Annotated[Application, Depends(get_application)]
+App = Annotated[oa.Application, Depends(get_application)]
 
 
 class CaptureRequest(BaseModel):
@@ -25,7 +23,7 @@ class CaptureRequest(BaseModel):
 
 @router.post("", status_code=202)
 async def create_capture(data: CaptureRequest, app: App):
-    capture = await application.request_capture(
+    capture = await oa.request_capture(
         app,
         url=data.url,
         depth=data.depth,
@@ -40,7 +38,7 @@ async def create_capture(data: CaptureRequest, app: App):
 
 @router.get("/{capture_id}")
 async def get_capture(capture_id: str, app: App):
-    capture = await application.get_capture(app, capture_id)
+    capture = await oa.get_capture(app, capture_id)
 
     if capture is None:
         raise HTTPException(status_code=404, detail="Capture not found")
