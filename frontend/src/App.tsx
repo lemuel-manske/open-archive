@@ -7,14 +7,16 @@ import { useCaptures } from "./hooks/useCaptures";
 
 export default function App() {
   const { captures, loading, creating, error, refresh, submit } = useCaptures();
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const selected = captures.find((capture) => capture._id === selectedId);
 
   return (
     <div className="site-shell">
       <header className="site-header">
         <div className="header-content">
-          <a className="brand" href="/" aria-label="OpenArchive — início">
+          <a className="brand" href="/" aria-label="OpenArchive - início">
             <span className="brand-mark" aria-hidden="true">
               O
             </span>
@@ -39,10 +41,6 @@ export default function App() {
 
             <p>Preserve páginas da web, acompanhe o processamento e explore versões arquivadas.</p>
           </div>
-
-          <div className="hero-symbol" aria-hidden="true">
-            ↗
-          </div>
         </div>
 
         {error && (
@@ -50,13 +48,14 @@ export default function App() {
             {error}
           </div>
         )}
+
         <CaptureForm busy={creating} onSubmit={submit} />
 
         <div className="section-topline">
           <span>CAPTURAS RECENTES</span>
 
           <button className="text-action" onClick={() => void refresh()}>
-            Atualizar histórico ↻
+            Atualizar histórico
           </button>
         </div>
 
@@ -73,8 +72,7 @@ export default function App() {
       </main>
 
       <footer className="site-footer">
-        <span>OpenArchive · Preservação digital com WACZ</span>
-        <span>Browsertrix · MongoDB · ReplayWeb.page</span>
+        <span>OpenArchive</span>
       </footer>
     </div>
   );

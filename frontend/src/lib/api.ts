@@ -1,5 +1,7 @@
 import type { Capture, CaptureAccepted, CaptureRequest } from "../types/capture";
 
+const CAPTURES_ENDPOINT = "/captures";
+
 async function assertOk(response: Response): Promise<Response> {
   if (response.ok) return response;
 
@@ -9,13 +11,13 @@ async function assertOk(response: Response): Promise<Response> {
 }
 
 export async function listCaptures(signal?: AbortSignal): Promise<Capture[]> {
-  const response = await fetch("/captures?limit=100", { signal });
+  const response = await fetch(`${CAPTURES_ENDPOINT}/?limit=100`, { signal });
 
   return (await assertOk(response)).json() as Promise<Capture[]>;
 }
 
 export async function createCapture(data: CaptureRequest): Promise<CaptureAccepted> {
-  const response = await fetch("/captures", {
+  const response = await fetch(CAPTURES_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -25,5 +27,5 @@ export async function createCapture(data: CaptureRequest): Promise<CaptureAccept
 }
 
 export function archiveUrl(id: string): string {
-  return `/captures/${encodeURIComponent(id)}/archive`;
+  return `${CAPTURES_ENDPOINT}/${encodeURIComponent(id)}/archive`;
 }

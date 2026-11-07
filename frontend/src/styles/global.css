@@ -20,24 +20,30 @@
 *::after {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
   min-width: 320px;
 }
+
 button,
 input {
   font: inherit;
 }
+
 button {
   cursor: pointer;
 }
+
 a {
   color: inherit;
 }
+
 :focus-visible {
   outline: 2px solid #7ce3c8;
   outline-offset: 3px;
 }
+
 ::selection {
   background: #22675d;
   color: #fff;
