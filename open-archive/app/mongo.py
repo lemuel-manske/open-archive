@@ -70,7 +70,7 @@ class MongoDatabase(Database):
 
     async def complete_capture(self, capture_id: str, file_id: str) -> None:
         result = await self.captures.update_one(
-            {"_id": capture_id},
+            {"_id": capture_id, "status": "running"},
             {
                 "$set": {
                     "status": "completed",
