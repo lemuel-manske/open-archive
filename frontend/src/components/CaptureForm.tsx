@@ -1,11 +1,12 @@
-import { useState, type SubmitEvent } from "react";
+import { useState } from "react";
+import type { SubmitEvent } from "react";
 
 import type { CaptureRequest } from "../types/capture";
 
-const NO_URL = ""
+const NO_URL = "";
 
-const DEFAULT_DEPTH = 1
-const DEFAULT_LIMIT = 20
+const DEFAULT_DEPTH = 1;
+const DEFAULT_LIMIT = 20;
 
 interface Properties {
   busy: boolean;
