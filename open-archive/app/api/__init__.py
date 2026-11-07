@@ -53,7 +53,7 @@ class CaptureRequest(BaseModel):
     limit: int = Field(default=20, ge=1, le=100)
 
 
-@router.get("", response_model=list[oa.Capture])
+@router.get("", response_model=list[oa.Capture], response_model_exclude={"__all__": {"lease_token"}})
 async def list_captures(
     app: App, limit: int = Query(default=12, ge=1, le=100), skip: int = Query(default=0, ge=0)
 ):
@@ -147,7 +147,7 @@ async def delete_capture(capture_id: str, app: App):
         raise HTTPException(status_code=404, detail="Capture not found")
 
 
-@router.get("/{capture_id}")
+@router.get("/{capture_id}", response_model=oa.Capture, response_model_exclude={"lease_token"})
 async def get_capture(capture_id: str, app: App):
     capture = await oa.get_capture(app, capture_id)
 

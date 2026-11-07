@@ -40,6 +40,7 @@ services:
       MONGO_URI: mongodb://mongodb:27017/
       CRAWLS_PATH: /crawls
       CRAWLS_VOLUME: ${CRAWLS_HOST_DIR}
+      CRAWL_TIMEOUT_SECONDS: 600
 
     volumes:
       - ${CRAWLS_HOST_DIR}:/crawls

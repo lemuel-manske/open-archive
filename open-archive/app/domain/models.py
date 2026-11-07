@@ -31,3 +31,6 @@ class Capture:
     attempts: int = 0
     started_at: datetime | None = None
     completed_at: datetime | None = None
+    lease_token: str | None = None
+    lease_expires_at: datetime | None = None
+    next_attempt_at: datetime | None = None

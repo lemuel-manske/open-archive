@@ -119,8 +119,14 @@ export function CaptureList({
           </time>
 
           <div className="capture-meta">
-            Profundidade {capture.depth} · Limite {capture.limit}
+            Profundidade {capture.depth} · Limite {capture.limit} · Tentativa {capture.attempts}
           </div>
+
+          {capture.status === "pending" && capture.next_attempt_at && (
+            <div className="capture-meta">
+              Nova tentativa: {formatDate(capture.next_attempt_at)}
+            </div>
+          )}
 
           {capture.error && <p className="capture-error">{capture.error}</p>}
         </div>

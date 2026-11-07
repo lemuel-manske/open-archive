@@ -9,6 +9,8 @@ export interface Capture {
   created_at: string;
   archive_file_id: string | null;
   error: string | null;
+  attempts: number;
+  next_attempt_at: string | null;
 }
 
 export interface CaptureRequest {

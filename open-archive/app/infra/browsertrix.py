@@ -1,8 +1,9 @@
+import time
 from pathlib import Path
 
-from app.domain.protocols import CRAWLS_PATH, CRAWLS_VOLUME, Crawler
-
 from docker import DockerClient
+
+from app.domain.protocols import CRAWLS_PATH, CRAWLS_VOLUME, Crawler
 
 IMAGE = "webrecorder/browsertrix-crawler"
 
@@ -19,7 +20,14 @@ class BrowsertrixCrawler(Crawler):
     def __init__(self, docker_client: DockerClient):
         self.docker_client = docker_client
 
-    def generate_wacz(self, fname: str, url: str, depth: int = 1, limit: int = 20) -> Path:
+    def generate_wacz(
+        self,
+        fname: str,
+        url: str,
+        depth: int = 1,
+        limit: int = 20,
+        timeout_seconds: int = 600,
+    ) -> Path:
         cmd = [
             "crawl",
             "--url",
@@ -33,17 +41,40 @@ class BrowsertrixCrawler(Crawler):
             fname,
         ]
 
-        self.docker_client.containers.run(
+        container = self.docker_client.containers.run(
             image=IMAGE,
             command=cmd,
             volumes={CRAWLS_VOLUME: {"bind": "/crawls", "mode": "rw"}},
-            detach=False,
-            remove=True,
+            detach=True,
+            remove=False,
+            labels={"openarchive.crawler": "true"},
         )
 
-        path = CRAWLS_PATH / "collections" / fname / f"{fname}.wacz"
+        try:
+            deadline = time.monotonic() + timeout_seconds
 
-        if not path.is_file():
-            raise FileNotFoundError(f"WACZ file not found at {path}")
+            while True:
+                container.reload()
 
-        return path
+                if container.status in ("exited", "dead"):
+                    result = container.wait(timeout=15)
+
+                    if result["StatusCode"] != 0:
+                        logs = container.logs(tail=30).decode("utf-8", errors="replace")
+                        raise RuntimeError(f"Browsertrix exited with an error: {logs}")
+
+                    break
+
+                if time.monotonic() >= deadline:
+                    raise TimeoutError(f"Browsertrix exceeded {timeout_seconds} seconds")
+
+                time.sleep(2)
+
+            path = CRAWLS_PATH / "collections" / fname / f"{fname}.wacz"
+
+            if not path.is_file():
+                raise FileNotFoundError(f"WACZ file not found at {path}")
+
+            return path
+        finally:
+            container.remove(force=True)

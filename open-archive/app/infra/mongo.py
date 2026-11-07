@@ -1,8 +1,9 @@
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import os
+from uuid import uuid4
 from pathlib import Path
-from typing import AsyncIterator
+from typing import Any, AsyncIterator
 
 from app.domain.models import Capture
 from app.domain.protocols import Database
@@ -20,7 +21,7 @@ def get_mongo_client() -> AsyncMongoClient:
 
     assert uri is not None, "MONGO_URI environment variable is not set"
 
-    return AsyncMongoClient(uri)
+    return AsyncMongoClient(uri, tz_aware=True)
 
 
 class MongoDatabase(Database):
@@ -72,28 +73,74 @@ class MongoDatabase(Database):
 
         return [Capture(**doc) async for doc in cursor]
 
-    async def claim_next_capture(self) -> Capture | None:
+    async def claim_next_capture(
+        self, lease_seconds: int = 120, max_attempts: int = 3
+    ) -> Capture | None:
         now = datetime.now(timezone.utc)
+        expired = {"status": "running", "lease_expires_at": {"$lte": now}}
+
+        await self.captures.update_many(
+            {
+                "attempts": {"$gte": max_attempts},
+                "$or": [expired, {"status": "pending"}],
+            },
+            {
+                "$set": {
+                    "status": "failed",
+                    "error": "Capture exceeded maximum attempts",
+                    "completed_at": now,
+                },
+                "$unset": {"lease_token": "", "lease_expires_at": "", "next_attempt_at": ""},
+            },
+        )
 
         doc = await self.captures.find_one_and_update(
             {
-                "status": "pending",
+                "attempts": {"$lt": max_attempts},
+                "$or": [
+                    {
+                        "status": "pending",
+                        "$or": [
+                            {"next_attempt_at": None},
+                            {"next_attempt_at": {"$lte": now}},
+                        ],
+                    },
+                    expired,
+                ],
             },
             {
                 "$set": {
                     "status": "running",
                     "started_at": now,
+                    "completed_at": None,
                     "error": None,
+                    "lease_token": str(uuid4()),
+                    "lease_expires_at": now + timedelta(seconds=lease_seconds),
+                    "next_attempt_at": None,
                 },
-                "$inc": {
-                    "attempts": 1,
-                },
+                "$inc": {"attempts": 1},
             },
             sort=[("created_at", 1)],
             return_document=ReturnDocument.AFTER,
         )
 
         return Capture(**doc) if doc else None
+
+    async def renew_capture_lease(
+        self, capture_id: str, lease_token: str, lease_seconds: int
+    ) -> bool:
+        now = datetime.now(timezone.utc)
+        result = await self.captures.update_one(
+            {
+                "_id": capture_id,
+                "status": "running",
+                "lease_token": lease_token,
+                "lease_expires_at": {"$gt": now},
+            },
+            {"$set": {"lease_expires_at": now + timedelta(seconds=lease_seconds)}},
+        )
+
+        return result.matched_count == 1
 
     async def start_capture(self, capture_id: str) -> None:
         result = await self.captures.update_one(
@@ -144,31 +191,68 @@ class MongoDatabase(Database):
 
         return str(file_id)
 
-    async def complete_capture(self, capture_id: str, file_id: str) -> None:
+    async def delete_archive(self, file_id: str) -> None:
+        await self.files.delete(ObjectId(file_id))
+
+    async def complete_capture(
+        self, capture_id: str, file_id: str, lease_token: str | None = None
+    ) -> None:
+        now = datetime.now(timezone.utc)
+        query: dict[str, Any] = {"_id": capture_id, "status": "running"}
+        if lease_token is not None:
+            query["lease_token"] = lease_token
+            query["lease_expires_at"] = {"$gt": now}
+
         result = await self.captures.update_one(
-            {"_id": capture_id, "status": "running"},
+            query,
             {
                 "$set": {
                     "status": "completed",
+                    "completed_at": now,
                     "archive_file_id": file_id,
                     "error": None,
-                }
+                },
+                "$unset": {
+                    "lease_token": "",
+                    "lease_expires_at": "",
+                    "next_attempt_at": "",
+                },
             },
         )
+        if result.matched_count != 1:
+            raise RuntimeError("Capture lease lost or capture not running")
 
-        if result.matched_count == 0:
-            raise LookupError(capture_id)
+    async def fail_capture(
+        self, capture_id: str, error: str, lease_token: str | None = None,
+        max_attempts: int = 3, retry_delay_seconds: int = 30,
+    ) -> None:
+        now = datetime.now(timezone.utc)
+        query: dict[str, Any] = {"_id": capture_id}
+        if lease_token is not None:
+            query.update({
+                "status": "running",
+                "lease_token": lease_token,
+                "lease_expires_at": {"$gt": now},
+            })
 
-    async def fail_capture(self, capture_id: str, error: str) -> None:
+        capture = await self.captures.find_one(query)
+        if capture is None:
+            raise RuntimeError("Capture lease lost or capture not found")
+
+        retry = lease_token is not None and capture.get("attempts", 0) < max_attempts
         result = await self.captures.update_one(
-            {"_id": capture_id},
+            query,
             {
                 "$set": {
-                    "status": "failed",
+                    "status": "pending" if retry else "failed",
                     "error": error,
-                }
+                    "completed_at": None if retry else now,
+                    "next_attempt_at": (
+                        now + timedelta(seconds=retry_delay_seconds) if retry else None
+                    ),
+                },
+                "$unset": {"lease_token": "", "lease_expires_at": ""},
             },
         )
-
-        if result.matched_count == 0:
-            raise LookupError(capture_id)
+        if result.matched_count != 1:
+            raise RuntimeError("Capture lease lost")
