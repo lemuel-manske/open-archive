@@ -12,7 +12,7 @@ requires-python = ">=3.12"
 
 [project.optional-dependencies]
 dev = ["ruff", "pyright"]
-app = ["docker", "pymongo", "gridfs"]
+app = ["docker", "pymongo", "fastapi", "pydantic"]
 
 
 [tool.setuptools.packages.find]

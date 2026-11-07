@@ -1,42 +1,31 @@
-from pathlib import Path
-import asyncio
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
+
+import docker
+from fastapi import FastAPI
 
 import app.application as application
-import app.deps as deps
+from app.api import router
+from app.browsertrix import get_browsertrix_crawler
+from app.mongo import get_mongo_client, get_mongo_database
 
 
-async def start():
-    print("Running")
+@asynccontextmanager
+async def lifespan(api: FastAPI) -> AsyncGenerator[None, None]:
+    mongo_client = get_mongo_client()
+    docker_client = docker.from_env()
 
-    _app = application.init_app(
-        db=deps.mongo_db.get(),
-        crawler=deps.browsertrix_crawler.get(),
+    api.state.application = application.init_app(
+        db=get_mongo_database(mongo_client),
+        crawler=get_browsertrix_crawler(docker_client),
     )
 
-    capture = await application.request_capture(
-        app=_app,
-        url="https://www.google.com",
-        depth=1,
-        limit=1,
-    )
-
-    wacz_id = await application.generate_wacz(
-        app=_app,
-        capture_id=capture._id,
-    )
-
-    print(f"WACZ file generated at: {wacz_id}")
-
-    capture_id = capture._id
-
-    wacz_path = Path(f"./{capture_id}_retrieved.wacz")
-
-    with wacz_path.open("wb") as output:
-        async for chunk in application.stream_capture_archive(
-            _app, capture_id
-        ):
-            output.write(chunk)
+    try:
+        yield
+    finally:
+        await mongo_client.close()
+        docker_client.close()
 
 
-if __name__ == "__main__":
-    asyncio.run(start())
+api = FastAPI(lifespan=lifespan)
+api.include_router(router)
