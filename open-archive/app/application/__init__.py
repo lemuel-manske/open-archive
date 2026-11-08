@@ -1,13 +1,13 @@
-import asyncio
 from collections.abc import AsyncIterator
-from datetime import datetime, timezone
 
 from app.domain.models import Capture
-from app.domain.protocols import Crawler, Database
+from app.domain.protocols import Captures, Crawler, LoginSessions, Profiles
 
 
 class Application:
-    db: Database
+    captures: Captures
+    profiles: Profiles
+    login_sessions: LoginSessions
 
     crawler: Crawler | None = None
 
@@ -15,89 +15,45 @@ class Application:
 def init_app(**kwargs):
     app = Application()
 
-    db = kwargs.get("db")
-    assert db is not None, "Database instance is required"
+    captures = kwargs.get("captures")
+    assert captures is not None, "Database instance is required"
+
+    profiles = kwargs.get("profiles")
+    assert profiles is not None, "Profiles store instance is required"
+
+    login_sessions = kwargs.get("login_sessions")
+    assert login_sessions is not None, "Login sessions store instance is required"
 
     crawler = kwargs.get("crawler")
 
-    app.db = db
+    app.captures = captures
+    app.profiles = profiles
+    app.login_sessions = login_sessions
     app.crawler = crawler
 
     return app
 
 
-async def request_capture(
+async def create_capture(
     app: Application,
     url: str,
     depth: int,
     limit: int,
+    profile_id: str | None = None,
 ) -> Capture:
-    capture = Capture(
-        url=url,
-        depth=depth,
-        limit=limit,
-        status="pending",
-        created_at=datetime.now(timezone.utc),
-    )
-
-    await app.db.create_capture(capture)
-
-    return capture
+    return await app.captures.save(url, depth, limit, profile_id)
 
 
 async def get_capture(app: Application, capture_id: str) -> Capture | None:
-    return await app.db.get_capture(capture_id)
+    return await app.captures.get(capture_id)
 
 
 async def delete_capture(app: Application, capture_id: str) -> bool:
-    return await app.db.delete_capture(capture_id)
-
-
-# just used for testing purposes, not exposed as an endpoint. See `worker`
-async def generate_wacz(
-    app: Application,
-    capture_id: str,
-) -> str:
-    capture = await app.db.get_capture(capture_id)
-
-    if capture is None:
-        raise LookupError(f"Capture not found: {capture_id}")
-
-    await app.db.start_capture(capture_id)
-
-    assert app.crawler is not None, "Crawler instance is required"
-
-    try:
-        path = await asyncio.to_thread(
-            app.crawler.generate_wacz,
-            capture._id,
-            capture.url,
-            capture.depth,
-            capture.limit,
-        )
-
-        file_id = await app.db.save_archive(
-            capture_id,
-            path,
-        )
-
-        await app.db.complete_capture(
-            capture_id,
-            file_id,
-        )
-
-        return file_id
-
-    except Exception as exc:
-        await app.db.fail_capture(
-            capture_id,
-            str(exc),
-        )
-        raise
+    return await app.captures.delete(capture_id)
 
 
 async def list_captures(app: Application, limit: int = 12, skip: int = 0) -> list[Capture]:
-    return await app.db.list_captures(limit=limit, skip=skip)
+    return await app.captures.list(limit=limit, skip=skip)
 
 
 async def stream_capture_archive(
@@ -106,7 +62,7 @@ async def stream_capture_archive(
     start: int = 0,
     end: int | None = None,
 ) -> AsyncIterator[bytes]:
-    capture = await app.db.get_capture(capture_id)
+    capture = await app.captures.get(capture_id)
 
     if capture is None:
         raise LookupError(capture_id)
@@ -114,7 +70,7 @@ async def stream_capture_archive(
     if capture.archive_file_id is None:
         raise RuntimeError("Archive not available")
 
-    async for chunk in app.db.stream_archive(
+    async for chunk in app.captures.stream_archive(
         capture.archive_file_id,
         start=start,
         end=end,

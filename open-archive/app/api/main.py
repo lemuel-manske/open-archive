@@ -4,9 +4,14 @@ from typing import AsyncGenerator
 from fastapi import FastAPI
 
 import app.application as oa
-from app.infra.mongo import get_mongo_client, get_mongo_database
+from app.infra.mongo import (
+    get_captures_store,
+    get_login_sessions_store,
+    get_mongo_client,
+    get_profile_store,
+)
 
-from . import router
+from . import capture_router, login_router
 
 
 @asynccontextmanager
@@ -14,8 +19,14 @@ async def lifespan(api: FastAPI) -> AsyncGenerator[None, None]:
     mongo_client = get_mongo_client()
 
     try:
+        ls = get_login_sessions_store(mongo_client)
+
+        await ls.ensure_indexes()
+
         api.state.application = oa.init_app(
-            db=get_mongo_database(mongo_client),
+            captures=get_captures_store(mongo_client),
+            login_sessions=ls,
+            profiles=get_profile_store(mongo_client),
         )
 
         yield
@@ -28,7 +39,8 @@ api = FastAPI(
     lifespan=lifespan,
 )
 
-api.include_router(router)
+api.include_router(capture_router)
+api.include_router(login_router)
 
 
 @api.get("/health", tags=["health"])

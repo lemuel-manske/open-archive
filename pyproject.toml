@@ -12,7 +12,7 @@ requires-python = ">=3.12"
 
 [project.optional-dependencies]
 dev = ["ruff", "pyright", "pytest", "pytest-asyncio", "httpx"]
-app = ["docker", "pymongo", "fastapi", "pydantic", "uvicorn[standard]"]
+app = ["docker", "pymongo", "fastapi", "pydantic", "uvicorn[standard]", "cryptography"]
 
 
 [tool.setuptools.packages.find]

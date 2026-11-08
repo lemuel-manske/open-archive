@@ -1,9 +1,9 @@
-import time
 from pathlib import Path
-
-from docker import DockerClient
+import time
 
 from app.domain.protocols import CRAWLS_PATH, CRAWLS_VOLUME, Crawler
+
+from docker import DockerClient
 
 IMAGE = "webrecorder/browsertrix-crawler"
 
@@ -27,6 +27,7 @@ class BrowsertrixCrawler(Crawler):
         depth: int = 1,
         limit: int = 20,
         timeout_seconds: int = 600,
+        profile_path: Path | None = None,
     ) -> Path:
         cmd = [
             "crawl",
@@ -40,6 +41,9 @@ class BrowsertrixCrawler(Crawler):
             "--collection",
             fname,
         ]
+
+        if profile_path is not None:
+            cmd.extend(["--profile", f"/crawls/profiles/{profile_path.name}"])
 
         container = self.docker_client.containers.run(
             image=IMAGE,
