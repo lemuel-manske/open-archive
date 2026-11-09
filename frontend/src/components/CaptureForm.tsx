@@ -1,7 +1,9 @@
 import { useState } from "react";
-import type { SubmitEvent } from "react";
+import type { SyntheticEvent } from "react";
 
-import type { CaptureRequest } from "../types/capture";
+import { CaptureAuthentication } from "./CaptureAuthentication";
+
+import type { BrowserProfile, CaptureRequest, LoginSession } from "../types/capture";
 
 const NO_URL = "";
 
@@ -10,21 +12,44 @@ const DEFAULT_LIMIT = 20;
 
 interface Properties {
   busy: boolean;
+  profiles: BrowserProfile[];
+  profileId: string;
+  session: LoginSession | null;
+  profileBusy: boolean;
+  onSelectProfile: (id: string) => void;
+  onStartLogin: (url: string) => Promise<boolean>;
+  onCancelLogin: () => Promise<void>;
+  onDeleteProfile: (id: string) => Promise<boolean>;
 
   onSubmit: (request: CaptureRequest) => Promise<unknown>;
 }
 
-export function CaptureForm({ busy, onSubmit }: Properties) {
+export function CaptureForm({
+  busy,
+  profiles,
+  profileId,
+  session,
+  profileBusy,
+  onSelectProfile,
+  onStartLogin,
+  onCancelLogin,
+  onDeleteProfile,
+  onSubmit,
+}: Properties) {
   const [url, setUrl] = useState(NO_URL);
 
   const [depth, setDepth] = useState(DEFAULT_DEPTH);
 
   const [limit, setLimit] = useState(DEFAULT_LIMIT);
 
-  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+  const loginActive = session && ["pending", "starting", "running", "cancelling"].includes(session.status);
+
+  async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const result = await onSubmit({ url: url.trim(), depth, limit });
+    if (loginActive) return;
+
+    const result = await onSubmit({ url: url.trim(), depth, limit, profile_id: profileId || null });
 
     if (result) setUrl(NO_URL);
   }
@@ -100,7 +125,7 @@ export function CaptureForm({ busy, onSubmit }: Properties) {
 
   const renderSubmitButton = () => {
     return (
-      <button type="submit" className="button button-primary" disabled={busy}>
+      <button type="submit" className="button button-primary" disabled={busy || Boolean(loginActive)}>
         {busy ? "Solicitando..." : "Arquivar URL"}
       </button>
     );
@@ -120,6 +145,17 @@ export function CaptureForm({ busy, onSubmit }: Properties) {
     return (
       <form className="capture-form" onSubmit={(event) => void handleSubmit(event)}>
         {renderUrlField()}
+        <CaptureAuthentication
+          url={url}
+          profiles={profiles}
+          profileId={profileId}
+          session={session}
+          busy={busy || profileBusy}
+          onSelect={onSelectProfile}
+          onStart={onStartLogin}
+          onCancel={onCancelLogin}
+          onDelete={onDeleteProfile}
+        />
         {renderFormOptions()}
       </form>
     );

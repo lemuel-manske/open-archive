@@ -4,9 +4,22 @@ import { CaptureForm } from "./components/CaptureForm";
 import { CaptureList } from "./components/CaptureList";
 import { ReplayViewer } from "./components/ReplayViewer";
 import { useCaptures } from "./hooks/useCaptures";
+import { useProfiles } from "./hooks/useProfiles";
 
 export default function App() {
   const { captures, loading, creating, deletingId, error, refresh, submit, remove } = useCaptures();
+
+  const {
+    profiles,
+    profileId,
+    setProfileId,
+    session,
+    busy: profileBusy,
+    error: profileError,
+    start: startLogin,
+    cancel: cancelLogin,
+    remove: removeProfile,
+  } = useProfiles();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -51,13 +64,30 @@ export default function App() {
           </div>
         </div>
 
+        {profileError && (
+          <div className="alert" role="alert">
+            {profileError}
+          </div>
+        )}
+
         {error && (
           <div className="alert" role="alert">
             {error}
           </div>
         )}
 
-        <CaptureForm busy={creating} onSubmit={submit} />
+        <CaptureForm
+          busy={creating}
+          profiles={profiles}
+          profileId={profileId}
+          session={session}
+          profileBusy={profileBusy}
+          onSelectProfile={setProfileId}
+          onStartLogin={startLogin}
+          onCancelLogin={cancelLogin}
+          onDeleteProfile={removeProfile}
+          onSubmit={submit}
+        />
 
         <div className="section-topline">
           <span>CAPTURAS RECENTES</span>

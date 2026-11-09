@@ -128,6 +128,8 @@ export function CaptureList({
             </div>
           )}
 
+          {capture.profile_id && <div className="capture-meta">Captura autenticada</div>}
+
           {capture.error && <p className="capture-error">{capture.error}</p>}
         </div>
 

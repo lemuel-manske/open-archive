@@ -6,6 +6,7 @@ import App from "./App";
 import "./styles/global.css";
 import "./styles/app.css";
 import "./styles/versions.css";
+import "./styles/authenticated.css";
 
 const root = document.getElementById("root");
 
