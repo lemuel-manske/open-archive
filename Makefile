@@ -23,10 +23,10 @@ install:
 
 
 start-fastapi-dev:
-	$(PYTHON) -m uvicorn app.api.main:api --app-dir open-archive --reload --reload-dir open-archive/app
+	$(PYTHON) -m uvicorn backend.api.main:api --reload --reload-dir backend
 
 start-worker-dev:
-	$(PYTHON) -m app.worker.main
+	$(PYTHON) -m backend.worker.main
 
 
 config:
@@ -51,10 +51,10 @@ typecheck:
 	$(PYTHON) -m pyright
 
 lint:
-	$(PYTHON) -m ruff check open-archive
+	$(PYTHON) -m ruff check backend
 
 format:
-	$(PYTHON) -m ruff check --select I --fix open-archive
-	$(PYTHON) -m ruff format open-archive
+	$(PYTHON) -m ruff check --select I --fix backend
+	$(PYTHON) -m ruff format backend
 
 check: typecheck lint format-

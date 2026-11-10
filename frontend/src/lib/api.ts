@@ -1,78 +1,126 @@
-import type { BrowserProfile, Capture, CaptureAccepted, CaptureRequest, LoginSession } from "../types/capture";
+import type {
+  BrowserProfile,
+  Capture,
+  CaptureAccepted,
+  CaptureRequest,
+  LoginSession,
+} from "../types/capture";
 
-const CAPTURES_ENDPOINT = "/captures";
-const LOGIN_SESSIONS_ENDPOINT = "/login-sessions";
+const DELETE_METHOD = "DELETE";
+const POST_METHOD = "POST";
+
+const HEADERS = { "Content-Type": "application/json" };
+
+function captures(limit?: number): string {
+  return "/captures" + (limit ? `?limit=${limit}` : "");
+}
+
+function capture(id: string): string {
+  return captures() + "/" + encodeURIComponent(id);
+}
+
+function captureArchive(id: string): string {
+  return capture(id) + "/archive";
+}
+
+function profiles(): string {
+  return "/profiles";
+}
+
+function profile(id: string): string {
+  return profiles() + "/" + encodeURIComponent(id);
+}
+
+function loginSessions(): string {
+  return "/login-sessions";
+}
+
+function loginSession(id: string): string {
+  return loginSessions() + "/" + encodeURIComponent(id);
+}
 
 async function assertOk(response: Response): Promise<Response> {
   if (response.ok) return response;
 
-  const body = await response.text();
-
-  throw new Error(`HTTP ${response.status}: ${body || response.statusText}`);
+  throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 }
 
-export async function listCaptures(signal?: AbortSignal): Promise<Capture[]> {
-  const response = await fetch(`${CAPTURES_ENDPOINT}?limit=100`, { signal });
+async function listCaptures(signal?: AbortSignal): Promise<Capture[]> {
+  const response = await fetch(captures(100), { signal });
 
   return (await assertOk(response)).json() as Promise<Capture[]>;
 }
 
-export async function createCapture(data: CaptureRequest): Promise<CaptureAccepted> {
-  const response = await fetch(CAPTURES_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+async function createCapture(data: CaptureRequest, signal?: AbortSignal): Promise<CaptureAccepted> {
+  const response = await fetch(captures(), {
+    method: POST_METHOD,
+    headers: HEADERS,
     body: JSON.stringify(data),
+    signal,
   });
 
   return (await assertOk(response)).json() as Promise<CaptureAccepted>;
 }
 
-export async function deleteCapture(id: string): Promise<void> {
-  const response = await fetch(`${CAPTURES_ENDPOINT}/${encodeURIComponent(id)}`, {
-    method: "DELETE",
+async function deleteCapture(id: string, signal?: AbortSignal): Promise<void> {
+  const response = await fetch(capture(id), {
+    method: DELETE_METHOD,
+    signal,
   });
 
   await assertOk(response);
 }
 
-export async function listProfiles(signal?: AbortSignal): Promise<BrowserProfile[]> {
-  const response = await fetch("/profiles", { signal });
+async function listProfiles(signal?: AbortSignal): Promise<BrowserProfile[]> {
+  const response = await fetch(profiles(), { signal });
 
   return (await assertOk(response)).json() as Promise<BrowserProfile[]>;
 }
 
-export async function deleteProfile(id: string): Promise<void> {
-  const response = await fetch(`/profiles/${encodeURIComponent(id)}`, {
-    method: "DELETE",
+async function deleteProfile(id: string, signal?: AbortSignal): Promise<void> {
+  const response = await fetch(profile(id), {
+    method: DELETE_METHOD,
+    signal,
   });
 
   await assertOk(response);
 }
 
-export async function createLoginSession(url: string): Promise<LoginSession> {
-  const response = await fetch(LOGIN_SESSIONS_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+async function createLoginSession(url: string, signal?: AbortSignal): Promise<LoginSession> {
+  const response = await fetch(loginSessions(), {
+    method: POST_METHOD,
+    headers: HEADERS,
     body: JSON.stringify({ url }),
+    signal,
   });
 
   return (await assertOk(response)).json() as Promise<LoginSession>;
 }
 
-export async function getLoginSession(id: string, signal?: AbortSignal): Promise<LoginSession> {
-  const response = await fetch(`${LOGIN_SESSIONS_ENDPOINT}/${encodeURIComponent(id)}`, { signal });
+async function getLoginSession(id: string, signal?: AbortSignal): Promise<LoginSession> {
+  const response = await fetch(loginSession(id), { signal });
 
   return (await assertOk(response)).json() as Promise<LoginSession>;
 }
 
-export async function cancelLoginSession(id: string): Promise<void> {
-  const response = await fetch(`${LOGIN_SESSIONS_ENDPOINT}/${encodeURIComponent(id)}`, {
-    method: "DELETE",
+async function cancelLoginSession(id: string, signal?: AbortSignal): Promise<void> {
+  const response = await fetch(loginSession(id), {
+    method: DELETE_METHOD,
+    signal,
   });
 
   await assertOk(response);
 }
 
-export function archiveUrl(id: string): string {
-  return `${CAPTURES_ENDPOINT}/${encodeURIComponent(id)}/archive`;
-}
+export { captures, capture, captureArchive, profiles, profile, loginSessions, loginSession };
+
+export {
+  listCaptures,
+  createCapture,
+  deleteCapture,
+  listProfiles,
+  deleteProfile,
+  createLoginSession,
+  getLoginSession,
+  cancelLoginSession,
+};

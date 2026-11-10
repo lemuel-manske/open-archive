@@ -1,0 +1,10 @@
+{
+  "extends": "@openarchive/config-typescript/react.json",
+  "compilerOptions": {
+    "declaration": true,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.tsx", "src/**/*.test-fixture.tsx", "src/**/*.test.ts"]
+}

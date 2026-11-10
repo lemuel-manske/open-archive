@@ -1,0 +1,31 @@
+.section {
+  padding-block: var(--ui-space-32);
+  border-top: var(--ui-border-width) solid var(--ui-color-border);
+  scroll-margin-top: var(--ui-space-24);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: var(--ui-space-24);
+  margin-bottom: var(--ui-space-24);
+}
+
+.heading {
+  display: grid;
+  gap: var(--ui-space-8);
+  min-width: 0;
+}
+
+.heading .description {
+  color: var(--ui-color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-8);
+}

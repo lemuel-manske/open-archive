@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
+import { reactConfig } from "@openarchive/config-vite";
 
-import react from "@vitejs/plugin-react";
+import { mergeConfig } from "vite";
 
 const CAPTURES_ENDPOINT = "/captures";
 const HEALTH_ENDPOINT = "/health";
@@ -9,9 +9,7 @@ const PROFILES_ENDPOINT = "/profiles";
 
 const BACKEND_URL = "http://localhost:8000";
 
-export default defineConfig({
-  plugins: [react()],
-
+const config = mergeConfig(reactConfig, {
   server: {
     proxy: {
       [CAPTURES_ENDPOINT]: { target: BACKEND_URL, changeOrigin: true },
@@ -21,3 +19,5 @@ export default defineConfig({
     },
   },
 });
+
+export default config;

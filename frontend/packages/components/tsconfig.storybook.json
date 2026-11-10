@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "noEmit": true
+  },
+  "include": ["src", ".storybook", "playwright", "vite.config.ts", "playwright.config.ts"],
+  "exclude": []
+}

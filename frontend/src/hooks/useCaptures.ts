@@ -1,88 +1,94 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { createCapture, deleteCapture, listCaptures } from "../lib/api";
+
 import type { Capture, CaptureRequest } from "../types/capture";
 
-export function useCaptures() {
+import { useRequest } from "./useRequest";
+
+const POLL_INTERVAL = 3000;
+
+function useCaptures() {
   const [captures, setCaptures] = useState<Capture[]>([]);
 
-  const [loading, setLoading] = useState(true);
+  const [deletionTarget, setDeletionTarget] = useState<string | null>(null);
 
-  const [creating, setCreating] = useState(false);
+  const reading = useRequest();
 
-  const [error, setError] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const creation = useRequest();
 
-  const refresh = useCallback(async (signal?: AbortSignal) => {
-    try {
-      const data = await listCaptures(signal);
+  const deletion = useRequest();
 
-      if (!signal?.aborted) {
-        setCaptures(data);
-        setError(null);
-      }
-    } catch (cause) {
-      if (!signal?.aborted) setError(cause instanceof Error ? cause.message : String(cause));
-    } finally {
-      if (!signal?.aborted) setLoading(false);
-    }
-  }, []);
+  const { execute: read, cancel: cancelRead } = reading;
+
+  const refresh = useCallback(async () => {
+    const result = await read(listCaptures);
+
+    if (result) setCaptures(result.data);
+  }, [read]);
 
   useEffect(() => {
-    const controller = new AbortController();
+    void refresh();
 
-    void refresh(controller.signal);
-
-    const interval = window.setInterval(() => void refresh(controller.signal), 3000);
+    const interval = window.setInterval(() => void refresh(), POLL_INTERVAL);
 
     return () => {
-      controller.abort();
       window.clearInterval(interval);
+
+      cancelRead();
     };
-  }, [refresh]);
+  }, [refresh, cancelRead]);
 
-  const submit = useCallback(
-    async (data: CaptureRequest) => {
-      setCreating(true);
+  async function submit(request: CaptureRequest) {
+    reading.clearError();
 
-      setError(null);
+    deletion.clearError();
 
-      try {
-        const result = await createCapture(data);
+    const result = await creation.execute(async (signal) => {
+      const accepted = await createCapture(request, signal);
+
+      if (!signal.aborted) {
+        cancelRead();
 
         await refresh();
-
-        return result;
-      } catch (cause) {
-        setError(cause instanceof Error ? cause.message : String(cause));
-
-        return null;
-      } finally {
-        setCreating(false);
       }
-    },
-    [refresh],
-  );
 
-  const remove = useCallback(async (id: string) => {
-    setDeletingId(id);
+      return accepted;
+    });
 
-    setError(null);
+    return result?.data ?? null;
+  }
 
-    try {
-      await deleteCapture(id);
+  async function remove(id: string) {
+    reading.clearError();
 
-      setCaptures((current) => current.filter((capture) => capture._id !== id));
+    creation.clearError();
 
-      return true;
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : String(cause));
+    const result = await deletion.execute((signal) => {
+      setDeletionTarget(id);
 
-      return false;
-    } finally {
-      setDeletingId(null);
-    }
-  }, []);
+      return deleteCapture(id, signal);
+    });
 
-  return { captures, loading, creating, deletingId, error, refresh, submit, remove };
+    if (!result) return false;
+
+    cancelRead();
+
+    setCaptures((current) => current.filter((capture) => capture._id !== id));
+
+    return true;
+  }
+
+  return {
+    captures,
+    loading: !reading.started || reading.pending,
+    creating: creation.pending,
+    deletingId: deletion.pending ? deletionTarget : null,
+    error: deletion.error ?? creation.error ?? reading.error,
+    refresh,
+    submit,
+    remove,
+  };
 }
+
+export { useCaptures };

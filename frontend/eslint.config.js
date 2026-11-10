@@ -1,37 +1,21 @@
-import js from "@eslint/js";
+import reactConfig from "@openarchive/config-eslint/react";
 
 import { defineConfig, globalIgnores } from "eslint/config";
 
 import globals from "globals";
 
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
+const config = defineConfig(
+  globalIgnores(["packages"]),
 
-export default defineConfig(
-  globalIgnores(["dist", "node_modules"]),
+  reactConfig,
 
-  js.configs.recommended,
-  tseslint.configs.recommended,
   {
     files: ["public/replay/sw.js"],
+
     languageOptions: {
       globals: globals.serviceworker,
     },
   },
-
-  {
-    files: ["**/*.{ts,tsx}"],
-    languageOptions: {
-      globals: globals.browser,
-    },
-    plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-    },
-  },
 );
+
+export default config;

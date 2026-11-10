@@ -1,0 +1,21 @@
+.dialog {
+  box-sizing: border-box;
+  width: min(36rem, calc(100% - var(--ui-space-32)));
+  max-height: calc(100% - var(--ui-space-32));
+  padding: var(--ui-space-24);
+  border: var(--ui-border-width) solid var(--ui-color-text-secondary);
+  border-radius: var(--ui-border-radius);
+  background: var(--ui-color-background);
+  color: var(--ui-color-text-primary);
+  overflow: auto;
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 45%);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-16);
+}

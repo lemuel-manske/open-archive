@@ -1,0 +1,39 @@
+{
+  "name": "@openarchive/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Typed design tokens, shared enums, and build-time theme CSS.",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/tokens.js"
+    },
+    "./styles.css": "./dist/tokens.css"
+  },
+  "scripts": {
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write ."
+  },
+  "devDependencies": {
+    "@openarchive/config-eslint": "0.1.0",
+    "@openarchive/config-prettier": "0.1.0",
+    "@openarchive/config-typescript": "0.1.0",
+    "@openarchive/config-vite": "0.1.0",
+    "@types/node": "22.15.0",
+    "eslint": "9.39.0",
+    "prettier": "3.6.0",
+    "typescript": "5.9.3",
+    "vite": "7.1.0"
+  }
+}

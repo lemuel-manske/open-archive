@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   cancelLoginSession,
@@ -7,147 +7,190 @@ import {
   getLoginSession,
   listProfiles,
 } from "../lib/api";
+
+import { isLoginActive } from "../lib/login";
+
 import type { BrowserProfile, LoginSession } from "../types/capture";
 
+import { useRequest } from "./useRequest";
+
 const POLL_INTERVAL = 2000;
+
 const SESSION_KEY = "openarchive.loginSession";
 
-export function useProfiles() {
+function useProfiles() {
   const [profiles, setProfiles] = useState<BrowserProfile[]>([]);
-  const [profileId, setProfileId] = useState("");
-  const [session, setSession] = useState<LoginSession | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const refresh = useCallback(async (signal?: AbortSignal) => {
-    const data = await listProfiles(signal);
-    if (!signal?.aborted) setProfiles(data);
+  const [profileId, setProfileId] = useState("");
+
+  const [session, setSession] = useState<LoginSession | null>(null);
+
+  const currentSession = useRef<LoginSession | null>(null);
+
+  const profileRequest = useRequest();
+
+  const sessionRequest = useRequest();
+
+  const action = useRequest();
+
+  const { execute: readProfiles, cancel: cancelProfiles } = profileRequest;
+
+  const { execute: readSession, cancel: cancelSession } = sessionRequest;
+
+  const updateSession = useCallback((next: LoginSession) => {
+    currentSession.current = next;
+
+    setSession(next);
+
+    if (isLoginActive(next)) window.sessionStorage.setItem(SESSION_KEY, next._id);
+    else window.sessionStorage.removeItem(SESSION_KEY);
   }, []);
 
+  const refreshProfiles = useCallback(async () => {
+    const result = await readProfiles(listProfiles);
+
+    if (result) setProfiles(result.data);
+
+    return result;
+  }, [readProfiles]);
+
   useEffect(() => {
-    const controller = new AbortController();
-    void refresh(controller.signal).catch((cause: unknown) => {
-      if (!controller.signal.aborted) {
-        setError(cause instanceof Error ? cause.message : String(cause));
-      }
-    });
-    return () => controller.abort();
-  }, [refresh]);
+    void refreshProfiles();
+  }, [refreshProfiles]);
 
   useEffect(() => {
     const savedId = window.sessionStorage.getItem(SESSION_KEY);
+
     if (!savedId) return;
 
-    const controller = new AbortController();
-    void getLoginSession(savedId, controller.signal)
-      .then((existing) => {
-        if (!controller.signal.aborted) setSession(existing);
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) window.sessionStorage.removeItem(SESSION_KEY);
-      });
-
-    return () => controller.abort();
-  }, []);
-
-  const sessionId = session?._id;
-  const sessionStatus = session?.status;
-
-  useEffect(() => {
-    if (!sessionId || !["pending", "starting", "running", "cancelling"].includes(sessionStatus ?? "")) {
-      return;
-    }
-
-    const id = sessionId;
-    const controller = new AbortController();
-    let polling = false;
-
-    async function poll() {
-      if (polling || controller.signal.aborted) return;
-      polling = true;
-
+    void readSession(async (signal) => {
       try {
-        const next = await getLoginSession(id, controller.signal);
-        if (controller.signal.aborted) return;
+        return await getLoginSession(savedId, signal);
+      } catch (cause) {
+        if (signal.aborted) throw cause;
 
-        setSession(next);
-
-        if (["completed", "failed", "cancelled"].includes(next.status)) {
+        if (window.sessionStorage.getItem(SESSION_KEY) === savedId) {
           window.sessionStorage.removeItem(SESSION_KEY);
         }
 
-        if (next.status === "completed" && next.profile_id) {
-          setProfileId(next.profile_id);
-          await refresh(controller.signal);
-        }
-      } catch (cause) {
-        if (!controller.signal.aborted) {
-          setError(cause instanceof Error ? cause.message : String(cause));
-        }
-      } finally {
-        polling = false;
+        return null;
       }
+    }).then((result) => {
+      if (result?.data) updateSession(result.data);
+    });
+  }, [readSession, updateSession]);
+
+  const sessionId = session?._id;
+
+  const loginActive = isLoginActive(session);
+
+  const completedProfileId = session?.status === "completed" ? session.profile_id : null;
+
+  useEffect(() => {
+    if (!sessionId || !loginActive) return;
+
+    const id = sessionId;
+
+    async function poll() {
+      const result = await readSession((signal) => getLoginSession(id, signal));
+
+      if (result) updateSession(result.data);
     }
 
     void poll();
+
     const interval = window.setInterval(() => void poll(), POLL_INTERVAL);
 
     return () => {
-      controller.abort();
       window.clearInterval(interval);
+
+      cancelSession();
     };
-  }, [sessionId, sessionStatus, refresh]);
+  }, [sessionId, loginActive, readSession, cancelSession, updateSession]);
+
+  useEffect(() => {
+    if (!completedProfileId) return;
+
+    let subscribed = true;
+
+    cancelProfiles();
+
+    void refreshProfiles().then((result) => {
+      if (subscribed && result) setProfileId(completedProfileId);
+    });
+
+    return () => {
+      subscribed = false;
+
+      cancelProfiles();
+    };
+  }, [completedProfileId, refreshProfiles, cancelProfiles]);
 
   async function start(url: string) {
-    setBusy(true);
-    setError(null);
+    if (isLoginActive(currentSession.current)) return false;
 
-    try {
-      const created = await createLoginSession(url.trim());
-      window.sessionStorage.setItem(SESSION_KEY, created._id);
-      setSession(created);
-      return true;
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : String(cause));
-      return false;
-    } finally {
-      setBusy(false);
-    }
+    profileRequest.clearError();
+
+    sessionRequest.clearError();
+
+    cancelSession();
+
+    const result = await action.execute((signal) => createLoginSession(url.trim(), signal));
+
+    if (!result) return false;
+
+    updateSession(result.data);
+
+    return true;
   }
 
   async function cancel() {
-    if (!session) return;
-    setBusy(true);
-    setError(null);
+    const activeSession = currentSession.current;
 
-    try {
-      await cancelLoginSession(session._id);
-      setSession((current) => current ? { ...current, status: "cancelling" } : null);
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : String(cause));
-    } finally {
-      setBusy(false);
+    if (!activeSession || !isLoginActive(activeSession)) return;
+
+    const result = await action.execute((signal) => cancelLoginSession(activeSession._id, signal));
+
+    if (!result) return;
+
+    cancelSession();
+
+    const latest = currentSession.current;
+
+    if (latest?._id === activeSession._id && isLoginActive(latest)) {
+      updateSession({ ...latest, status: "cancelling" });
     }
   }
 
   async function remove(id: string) {
-    setBusy(true);
-    setError(null);
+    profileRequest.clearError();
 
-    try {
-      await deleteProfile(id);
-      setProfiles((current) => current.filter((profile) => profile._id !== id));
-      if (profileId === id) setProfileId("");
-      return true;
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : String(cause));
-      return false;
-    } finally {
-      setBusy(false);
-    }
+    sessionRequest.clearError();
+
+    const result = await action.execute((signal) => deleteProfile(id, signal));
+
+    if (!result) return false;
+
+    cancelProfiles();
+
+    setProfiles((current) => current.filter((profile) => profile._id !== id));
+
+    setProfileId((current) => (current === id ? "" : current));
+
+    return true;
   }
 
   return {
-    profiles, profileId, setProfileId, session, busy, error, start, cancel, remove,
+    profiles,
+    profileId,
+    setProfileId,
+    session,
+    busy: action.pending || profileRequest.pending || (!session && sessionRequest.pending),
+    error: action.error ?? profileRequest.error ?? sessionRequest.error,
+    start,
+    cancel,
+    remove,
   };
 }
+
+export { useProfiles };

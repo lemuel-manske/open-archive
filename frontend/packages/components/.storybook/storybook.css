@@ -1,0 +1,50 @@
+.storybook-theme {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--ui-space-24);
+  background: var(--ui-color-background);
+  color: var(--ui-color-text-primary);
+  font-family: var(--ui-font-body);
+  font-size: var(--ui-text-medium);
+  line-height: 1.5;
+}
+
+.storybook-theme[data-brand="library"] {
+  --ui-color-background: #ffffff;
+  --ui-color-text-primary: #193a32;
+  --ui-color-text-secondary: #405b52;
+  --ui-color-dark-surface: #285146;
+  --ui-color-surface-muted: #e4eee9;
+  --ui-font-body: system-ui, sans-serif;
+}
+
+.story-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ui-space-16);
+}
+
+.story-field {
+  display: grid;
+  gap: var(--ui-space-8);
+  max-width: 400px;
+}
+
+.story-field input {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  min-height: var(--ui-control-medium);
+  border: var(--ui-border-width) solid var(--ui-color-text-secondary);
+  border-radius: var(--ui-border-radius);
+  padding: var(--ui-space-12);
+  background: transparent;
+  color: var(--ui-color-text-primary);
+  font: inherit;
+}
+
+.story-field input:focus-visible {
+  outline: 2px solid var(--ui-color-text-primary);
+  outline-offset: 3px;
+}

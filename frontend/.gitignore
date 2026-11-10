@@ -2,3 +2,12 @@
 **/dist/
 
 *.tsbuildinfo
+
+**/storybook-static/
+
+**/storybook-debug.log
+
+**/test-results/
+**/playwright-report/
+
+**/playwright/.cache/

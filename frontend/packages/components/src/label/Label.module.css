@@ -1,0 +1,19 @@
+.label {
+  font-family: var(--ui-font-body);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ui-color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.label.small {
+  font-size: var(--ui-text-small);
+}
+
+.label.medium {
+  font-size: var(--ui-text-medium);
+}
+
+.label.large {
+  font-size: var(--ui-text-large);
+}

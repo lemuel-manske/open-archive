@@ -1,0 +1,9 @@
+.frame {
+  display: block;
+  width: 100%;
+  height: min(70vh, 760px);
+  min-height: 400px;
+  overflow: hidden;
+  border: var(--ui-border-width) solid var(--ui-color-text-secondary);
+  background: var(--ui-color-background);
+}

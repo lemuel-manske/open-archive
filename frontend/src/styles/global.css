@@ -1,15 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
-
 :root {
-  font-family:
-    "DM Sans",
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  color: #e7ebf3;
-  background: #080f1b;
+  font-family: var(--ui-font-body);
+  color: var(--ui-color-text-primary);
+  background: var(--ui-color-background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -23,28 +15,16 @@
 
 body {
   margin: 0;
-  min-width: 320px;
-}
-
-button,
-input {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-a {
-  color: inherit;
+  font-size: var(--ui-text-large);
+  line-height: 1.5;
 }
 
 :focus-visible {
-  outline: 2px solid #7ce3c8;
+  outline: 2px solid var(--ui-color-text-primary);
   outline-offset: 3px;
 }
 
 ::selection {
-  background: #22675d;
-  color: #fff;
+  background: var(--ui-color-text-primary);
+  color: var(--ui-color-background);
 }

@@ -1,0 +1,20 @@
+.text {
+  margin: 0;
+  font-family: var(--ui-font-body);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ui-color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.text.small {
+  font-size: var(--ui-text-small);
+}
+
+.text.medium {
+  font-size: var(--ui-text-medium);
+}
+
+.text.large {
+  font-size: var(--ui-text-large);
+}

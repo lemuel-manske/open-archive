@@ -1,7 +1,5 @@
 {
-  "include": ["open-archive/app", "open-archive/worker", "open-archive/tests"],
-
-  "extraPaths": ["open-archive"],
+  "include": ["backend"],
 
   "venvPath": ".",
   "venv": ".venv",

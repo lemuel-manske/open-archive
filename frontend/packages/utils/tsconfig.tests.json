@@ -1,0 +1,8 @@
+{
+  "extends": "@openarchive/config-typescript/react.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "noEmit": true
+  },
+  "include": ["src", "playwright", "playwright.config.ts"]
+}

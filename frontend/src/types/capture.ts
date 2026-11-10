@@ -1,6 +1,6 @@
-export type CaptureStatus = "pending" | "running" | "completed" | "failed";
+type CaptureStatus = "pending" | "running" | "completed" | "failed";
 
-export interface Capture {
+interface Capture {
   _id: string;
   url: string;
   depth: number;
@@ -14,21 +14,21 @@ export interface Capture {
   next_attempt_at: string | null;
 }
 
-export interface CaptureRequest {
+interface CaptureRequest {
   url: string;
   depth: number;
   limit: number;
   profile_id?: string | null;
 }
 
-export interface BrowserProfile {
+interface BrowserProfile {
   _id: string;
   name: string;
   url: string;
   created_at: string;
 }
 
-export type LoginStatus =
+type LoginStatus =
   | "pending"
   | "starting"
   | "running"
@@ -37,7 +37,7 @@ export type LoginStatus =
   | "completed"
   | "failed";
 
-export interface LoginSession {
+interface LoginSession {
   _id: string;
   url: string;
   status: LoginStatus;
@@ -46,7 +46,17 @@ export interface LoginSession {
   error: string | null;
 }
 
-export interface CaptureAccepted {
+interface CaptureAccepted {
   id: string;
   status: CaptureStatus;
 }
+
+export type {
+  CaptureStatus,
+  Capture,
+  CaptureRequest,
+  BrowserProfile,
+  LoginStatus,
+  LoginSession,
+  CaptureAccepted,
+};

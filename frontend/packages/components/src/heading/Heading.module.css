@@ -1,0 +1,35 @@
+.heading {
+  margin: 0;
+  font-family: var(--ui-font-display);
+  line-height: 1.2;
+  color: var(--ui-color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.heading.regular {
+  font-weight: var(--ui-weight-regular);
+}
+
+.heading.mediumWeight {
+  font-weight: var(--ui-weight-medium);
+}
+
+.heading.semibold {
+  font-weight: var(--ui-weight-semibold);
+}
+
+.heading.bold {
+  font-weight: var(--ui-weight-bold);
+}
+
+.heading.small {
+  font-size: calc(var(--ui-text-large) * 1.25);
+}
+
+.heading.medium {
+  font-size: calc(var(--ui-text-large) * 1.75);
+}
+
+.heading.large {
+  font-size: calc(var(--ui-text-large) * 2.5);
+}

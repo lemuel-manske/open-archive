@@ -4,6 +4,8 @@ const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "America/Sao_Paulo",
 });
 
-export function formatDate(value: string): string {
+function formatDate(value: string): string {
   return dateFormatter.format(new Date(value));
 }
+
+export { formatDate };

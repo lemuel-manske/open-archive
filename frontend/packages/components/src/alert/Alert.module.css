@@ -1,0 +1,9 @@
+.alert {
+  padding: var(--ui-space-16);
+  border: var(--ui-border-width) solid var(--ui-color-text-secondary);
+  background: var(--ui-color-surface);
+  font-family: var(--ui-font-body);
+  font-size: var(--ui-text-medium);
+  line-height: 1.5;
+  color: var(--ui-color-text-primary);
+}

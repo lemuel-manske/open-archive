@@ -7,10 +7,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /opt/openarchive
 
 COPY pyproject.toml .
-COPY open-archive/ ./open-archive/
+COPY backend/ ./backend/
 
 RUN pip install --no-cache-dir ".[app]"
 
-WORKDIR /opt/openarchive/open-archive
-
-CMD ["python", "-m", "app.worker.main"]
+CMD ["python", "-m", "backend.worker.main"]

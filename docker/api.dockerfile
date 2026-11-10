@@ -6,12 +6,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /opt/openarchive
 
 COPY pyproject.toml .
-COPY open-archive/ ./open-archive/
+COPY backend/ ./backend/
 
 RUN pip install --no-cache-dir ".[app]"
 
-WORKDIR /opt/openarchive/open-archive
-
 EXPOSE 8000
 
-CMD ["uvicorn", "app.api.main:api", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "backend.api.main:api", "--host", "0.0.0.0", "--port", "8000"]

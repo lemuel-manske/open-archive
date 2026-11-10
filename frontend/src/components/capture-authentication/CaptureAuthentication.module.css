@@ -1,0 +1,25 @@
+.content,
+.session {
+  display: grid;
+  gap: var(--ui-space-16);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ui-space-16);
+}
+
+.connection {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--ui-space-16);
+}
+
+@media (max-width: 760px) {
+  .connection {
+    grid-template-columns: 1fr;
+  }
+}

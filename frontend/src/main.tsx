@@ -3,10 +3,9 @@ import { createRoot } from "react-dom/client";
 
 import App from "./App";
 
+import "@openarchive/components/styles.css";
+
 import "./styles/global.css";
-import "./styles/app.css";
-import "./styles/versions.css";
-import "./styles/authenticated.css";
 
 const root = document.getElementById("root");
 

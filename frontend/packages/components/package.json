@@ -1,0 +1,58 @@
+{
+  "name": "@openarchive/components",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Reusable React components and static styles.",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/components.js"
+    },
+    "./styles.css": "./dist/components.css"
+  },
+  "scripts": {
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "lint": "eslint .",
+    "test": "tsc --project tsconfig.storybook.json && playwright test --tsconfig ../../tsconfig.test.json",
+    "storybook": "storybook dev --port 6006 --disable-telemetry --no-open",
+    "build:storybook": "storybook build --disable-telemetry",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write ."
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "dependencies": {
+    "@openarchive/design-tokens": "0.1.0",
+    "@openarchive/utils": "0.1.0"
+  },
+  "devDependencies": {
+    "@openarchive/config-eslint": "0.1.0",
+    "@openarchive/config-playwright": "0.1.0",
+    "@openarchive/config-prettier": "0.1.0",
+    "@openarchive/config-typescript": "0.1.0",
+    "@openarchive/config-vite": "0.1.0",
+    "@storybook/addon-a11y": "10.6.6",
+    "@storybook/addon-docs": "10.6.6",
+    "@storybook/react-vite": "10.6.6",
+    "@types/node": "22.15.0",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "9.39.0",
+    "prettier": "3.6.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "storybook": "10.6.6",
+    "typescript": "5.9.3",
+    "vite": "7.1.0"
+  }
+}

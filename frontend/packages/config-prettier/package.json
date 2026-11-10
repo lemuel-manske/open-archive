@@ -1,0 +1,23 @@
+{
+  "name": "@openarchive/config-prettier",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write ."
+  },
+  "devDependencies": {
+    "@openarchive/config-eslint": "0.1.0",
+    "eslint": "9.39.0",
+    "prettier": "3.6.0"
+  },
+  "peerDependencies": {
+    "prettier": "^3.6.0"
+  }
+}
