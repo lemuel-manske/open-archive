@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 
 import App from "./App";
 
-import "@openarchive/components/styles.css";
+import "@lemuel-manske/components/styles.css";
 
 import "./styles/global.css";
 

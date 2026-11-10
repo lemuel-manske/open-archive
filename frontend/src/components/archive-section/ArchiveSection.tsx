@@ -1,6 +1,6 @@
 import type { ReactNode, Ref } from "react";
 
-import { Heading, Text } from "@openarchive/components";
+import { Heading, Text } from "@lemuel-manske/components";
 
 import styles from "./ArchiveSection.module.css";
 

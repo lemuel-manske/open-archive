@@ -1,4 +1,4 @@
-import { Alert, Button, ButtonVariant, Dialog, Spinner, Text } from "@openarchive/components";
+import { Alert, Button, ButtonVariant, Dialog, Spinner, Text } from "@lemuel-manske/components";
 
 import type { ConfirmationDialogProps } from "./types";
 

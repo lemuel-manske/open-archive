@@ -1,4 +1,4 @@
-import { reactConfig } from "@openarchive/config-vite";
+import { reactConfig } from "@lemuel-manske/config-vite";
 
 import { mergeConfig } from "vite";
 

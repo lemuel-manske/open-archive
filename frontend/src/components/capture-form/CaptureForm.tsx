@@ -1,4 +1,4 @@
-import { Form, Spinner, Text } from "@openarchive/components";
+import { Form, Spinner, Text } from "@lemuel-manske/components";
 
 import { ArchiveSection } from "../archive-section/ArchiveSection";
 

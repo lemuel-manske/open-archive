@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
-import { ButtonVariant, useButton } from "@openarchive/components";
+import { ButtonVariant, useButton } from "@lemuel-manske/components";
 
-import { useAccessibility } from "@openarchive/utils";
+import { useAccessibility } from "@lemuel-manske/utils";
 
 import { isLoginActive } from "../../lib/login";
 

@@ -1,7 +1,0 @@
-{
-  "extends": "@openarchive/config-typescript/react.json",
-  "compilerOptions": {
-    "noEmit": true
-  },
-  "include": ["*.ts"]
-}

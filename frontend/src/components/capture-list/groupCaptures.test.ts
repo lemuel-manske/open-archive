@@ -1,4 +1,4 @@
-import { expect, test } from "@openarchive/config-jest/globals";
+import { expect, test } from "@lemuel-manske/config-jest/globals";
 
 import { completedCapture } from "../../types/capture.test-fixture";
 

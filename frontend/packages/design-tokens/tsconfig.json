@@ -1,9 +1,0 @@
-{
-  "extends": "@openarchive/config-typescript/base.json",
-  "compilerOptions": {
-    "declaration": true,
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "include": ["src"]
-}

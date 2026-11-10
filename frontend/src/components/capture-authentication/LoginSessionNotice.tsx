@@ -1,4 +1,4 @@
-import { Alert, Button, ButtonVariant, Link, Spinner, Text } from "@openarchive/components";
+import { Alert, Button, ButtonVariant, Link, Spinner, Text } from "@lemuel-manske/components";
 
 import type { LoginSession } from "../../types/capture";
 

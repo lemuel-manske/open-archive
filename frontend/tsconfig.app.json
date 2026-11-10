@@ -1,5 +1,5 @@
 {
-  "extends": "@openarchive/config-typescript/react.json",
+  "extends": "@lemuel-manske/config-typescript/react.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "useDefineForClassFields": true,

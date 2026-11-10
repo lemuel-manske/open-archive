@@ -1,4 +1,4 @@
-import { expect, test } from "@openarchive/config-playwright";
+import { expect, test } from "@lemuel-manske/config-playwright";
 
 import { AuthenticationHook } from "./useCaptureAuthentication.test-fixture";
 

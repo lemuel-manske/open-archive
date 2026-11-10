@@ -1,7 +1,4 @@
 :root {
-  font-family: var(--ui-font-body);
-  color: var(--ui-color-text-primary);
-  background: var(--ui-color-background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -15,8 +12,6 @@
 
 body {
   margin: 0;
-  font-size: var(--ui-text-large);
-  line-height: 1.5;
 }
 
 :focus-visible {

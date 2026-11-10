@@ -1,5 +1,5 @@
 {
-  "extends": "@openarchive/config-typescript/node.json",
+  "extends": "@lemuel-manske/config-typescript/node.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "allowImportingTsExtensions": true,

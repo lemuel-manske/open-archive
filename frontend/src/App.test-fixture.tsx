@@ -1,4 +1,4 @@
-import type { Page } from "@openarchive/config-playwright";
+import type { Page } from "@lemuel-manske/config-playwright";
 
 import type { BrowserProfile, Capture } from "./types/capture";
 

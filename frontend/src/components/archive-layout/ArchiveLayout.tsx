@@ -1,8 +1,8 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
-import { Heading, HeadingSize, HeadingWeight, Link, Text } from "@openarchive/components";
+import { Heading, HeadingSize, HeadingWeight, Link, Text } from '@lemuel-manske/components';
 
-import styles from "./ArchiveLayout.module.css";
+import styles from './ArchiveLayout.module.css';
 
 interface ArchiveLayoutProps {
   children: ReactNode;
@@ -10,7 +10,7 @@ interface ArchiveLayoutProps {
 
 function ArchiveLayout({ children }: ArchiveLayoutProps) {
   return (
-    <div className={styles.layout} data-ui-theme="archive">
+    <div className={styles.layout}>
       <Link href="#main-content" className={styles.skipLink}>
         Ir para o conteúdo
       </Link>

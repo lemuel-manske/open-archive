@@ -2,6 +2,7 @@
   position: relative;
   isolation: isolate;
   min-height: 100vh;
+  font-size: var(--ui-text-large);
   display: flex;
   flex-direction: column;
 }
@@ -63,7 +64,7 @@
   font-size: clamp(2.75rem, 6vw, 5rem);
 }
 
-.main > [role="alert"] {
+.main > [role='alert'] {
   margin-bottom: var(--ui-space-24);
 }
 
@@ -90,12 +91,12 @@
 @media (min-width: 1280px) {
   .layout::before,
   .layout::after {
-    content: "";
+    content: '';
     position: absolute;
     inset-block: 0;
     width: calc((100% - 1120px) / 2);
     z-index: -1;
-    background-image: url("./web-paper.svg");
+    background-image: url('./web-paper.svg');
     background-repeat: repeat-y;
     background-size: max(280px, calc(100% - 16px)) auto;
     opacity: 0.6;

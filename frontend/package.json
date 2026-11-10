@@ -1,10 +1,7 @@
 {
-  "name": "@openarchive/frontend",
-  "version": "0.1.0",
+  "name": "@open-archive/frontend",
+  "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "type": "module",
   "description": "Web interface for OpenArchive.",
   "license": "MIT",
@@ -21,30 +18,29 @@
     "node": ">=20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "build": "npm run build:components && tsc -b && vite build",
-    "build:components": "npm run build --workspace @openarchive/design-tokens && npm run build --workspace @openarchive/utils && npm run build --workspace @openarchive/components",
-    "build:storybook": "npm run build:components && npm run build:storybook --workspace @openarchive/components",
-    "dev": "npm run build:components && vite",
+    "build": "tsc -b && vite build",
+    "dev": "vite",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "lint": "eslint . && npm run lint --workspaces",
-    "lint:fix": "eslint . --fix && npm run lint:fix --workspaces",
-    "storybook": "npm run build:components && npm run storybook --workspace @openarchive/components",
-    "test": "npm run build:components && tsc -b && tsc --project tsconfig.tools.json && jest && npm run test --workspaces --if-present && playwright test --tsconfig tsconfig.test.json"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "tsc --project tsconfig.tools.json && jest && playwright test --tsconfig tsconfig.test.json"
   },
   "dependencies": {
-    "@openarchive/components": "0.1.0",
-    "@openarchive/utils": "0.1.0",
+    "@lemuel-manske/components": "1.0.0",
+    "@lemuel-manske/design-tokens": "1.0.0",
+    "@lemuel-manske/utils": "1.0.0",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
-    "@openarchive/config-eslint": "0.1.0",
-    "@openarchive/config-jest": "0.1.0",
-    "@openarchive/config-playwright": "0.1.0",
-    "@openarchive/config-prettier": "0.1.0",
-    "@openarchive/config-typescript": "0.1.0",
-    "@openarchive/config-vite": "0.1.0",
+    "@lemuel-manske/config-eslint": "1.0.0",
+    "@lemuel-manske/config-jest": "1.0.0",
+    "@lemuel-manske/config-playwright": "1.0.0",
+    "@lemuel-manske/config-prettier": "1.0.0",
+    "@lemuel-manske/config-typescript": "1.0.0",
+    "@lemuel-manske/config-vite": "1.0.0",
+    "@playwright/experimental-ct-react": "1.62.0",
     "@types/node": "22.15.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",

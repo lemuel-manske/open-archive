@@ -1,4 +1,4 @@
-import { Button, ButtonVariant, Link, Text, TextSize } from "@openarchive/components";
+import { Button, ButtonVariant, Link, Text, TextSize } from "@lemuel-manske/components";
 
 import { captureArchive } from "../../lib/api";
 

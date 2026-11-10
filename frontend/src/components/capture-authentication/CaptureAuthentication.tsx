@@ -1,4 +1,4 @@
-import { Alert, ButtonVariant, Form } from "@openarchive/components";
+import { Alert, ButtonVariant, Form } from "@lemuel-manske/components";
 
 import { ConfirmationDialog } from "../confirmation-dialog/ConfirmationDialog";
 

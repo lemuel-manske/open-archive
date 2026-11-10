@@ -1,16 +1,14 @@
-import reactConfig from "@openarchive/config-eslint/react";
+import reactConfig from '@lemuel-manske/config-eslint/react';
 
-import { defineConfig, globalIgnores } from "eslint/config";
+import { defineConfig } from 'eslint/config';
 
-import globals from "globals";
+import globals from 'globals';
 
 const config = defineConfig(
-  globalIgnores(["packages"]),
-
   reactConfig,
 
   {
-    files: ["public/replay/sw.js"],
+    files: ['public/replay/sw.js'],
 
     languageOptions: {
       globals: globals.serviceworker,

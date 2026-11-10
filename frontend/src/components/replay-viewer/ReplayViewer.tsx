@@ -1,6 +1,6 @@
 import { createElement } from "react";
 
-import { Button, ButtonVariant } from "@openarchive/components";
+import { Button, ButtonVariant } from "@lemuel-manske/components";
 
 import { ArchiveSection } from "../archive-section/ArchiveSection";
 

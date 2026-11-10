@@ -1,4 +1,4 @@
-import { Button, ButtonVariant, Form, Spinner, Text, TextSize } from "@openarchive/components";
+import { Button, ButtonVariant, Form, Spinner, Text, TextSize } from "@lemuel-manske/components";
 
 import { formatDate } from "../../lib/dates";
 
