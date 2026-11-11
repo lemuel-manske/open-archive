@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useTranslation } from '@lemuel-manske/i18n/react';
 
-import type { ConfirmationDialogProps } from "./types";
+import { COMMON_DELETE_ERROR } from '../../i18n/message-ids';
+
+import { useState } from 'react';
+
+import type { ConfirmationDialogProps } from './types';
 
 function useConfirmationDialog({ onConfirm, onClose }: ConfirmationDialogProps) {
+  const { t } = useTranslation();
+
   const [pending, setPending] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
@@ -24,9 +30,9 @@ function useConfirmationDialog({ onConfirm, onClose }: ConfirmationDialogProps) 
       const completed = await onConfirm();
 
       if (completed) close();
-      else setError("Não foi possível concluir a exclusão. Tente novamente.");
+      else setError(t(COMMON_DELETE_ERROR));
     } catch {
-      setError("Não foi possível concluir a exclusão. Tente novamente.");
+      setError(t(COMMON_DELETE_ERROR));
     } finally {
       setPending(false);
     }

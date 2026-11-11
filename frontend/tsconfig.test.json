@@ -1,6 +1,7 @@
 {
   "extends": "@lemuel-manske/config-typescript/react.json",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "resolveJsonModule": true
   }
 }

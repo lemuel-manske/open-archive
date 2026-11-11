@@ -1,27 +1,50 @@
-import { Form, Spinner, Text } from "@lemuel-manske/components";
+import { useTranslation } from '@lemuel-manske/i18n/react';
 
-import { ArchiveSection } from "../archive-section/ArchiveSection";
+import {
+  FORM_DEPTH,
+  FORM_DESCRIPTION,
+  FORM_LIMIT,
+  FORM_KICKER,
+  FORM_LOADING,
+  FORM_LOGIN_ACTIVE,
+  FORM_NAME,
+  FORM_SUBMIT,
+  FORM_SUBMITTING,
+  FORM_TITLE,
+  FORM_URL,
+} from '../../i18n/message-ids';
 
-import { CaptureAuthentication } from "../capture-authentication/CaptureAuthentication";
+import { Form, Spinner, Text } from '@lemuel-manske/components';
 
-import type { CaptureFormProps } from "./types";
+import { ArchiveSection } from '../archive-section/ArchiveSection';
 
-import { useCaptureForm } from "./useCaptureForm";
+import { CaptureAuthentication } from '../capture-authentication/CaptureAuthentication';
 
-import styles from "./CaptureForm.module.css";
+import type { CaptureFormProps } from './types';
+
+import { useCaptureForm } from './useCaptureForm';
+
+import styles from './CaptureForm.module.css';
 
 function CaptureForm(props: CaptureFormProps) {
+  const { t } = useTranslation();
+
   const form = useCaptureForm(props);
 
   return (
     <ArchiveSection
       id="new-capture"
-      title="Preserve uma página da web"
-      description="Defina a URL inicial, a profundidade e o limite de páginas."
+      kicker={t(FORM_KICKER)}
+      title={t(FORM_TITLE)}
+      description={t(FORM_DESCRIPTION)}
     >
-      <Form aria-label="Nova captura" onSubmit={(event) => void form.submit(event)}>
+      <Form
+        className={styles.form}
+        aria-label={t(FORM_NAME)}
+        onSubmit={(event) => void form.submit(event)}
+      >
         <Form.Field disabled={props.busy} required>
-          <Form.Field.Label>URL inicial</Form.Field.Label>
+          <Form.Field.Label>{t(FORM_URL)}</Form.Field.Label>
 
           <Form.Field.Control>
             <Form.Input
@@ -48,7 +71,7 @@ function CaptureForm(props: CaptureFormProps) {
 
         <div className={styles.options}>
           <Form.Field disabled={props.busy} required>
-            <Form.Field.Label>Profundidade</Form.Field.Label>
+            <Form.Field.Label>{t(FORM_DEPTH)}</Form.Field.Label>
 
             <Form.Field.Control>
               <Form.Input
@@ -63,7 +86,7 @@ function CaptureForm(props: CaptureFormProps) {
           </Form.Field>
 
           <Form.Field disabled={props.busy} required>
-            <Form.Field.Label>Máx. páginas</Form.Field.Label>
+            <Form.Field.Label>{t(FORM_LIMIT)}</Form.Field.Label>
 
             <Form.Field.Control>
               <Form.Input
@@ -78,13 +101,15 @@ function CaptureForm(props: CaptureFormProps) {
           </Form.Field>
 
           <Form.Button type="submit" disabled={form.submitDisabled}>
-            <Form.Button.Label>{props.busy ? "Solicitando…" : "Arquivar URL"}</Form.Button.Label>
+            <Form.Button.Label>
+              {props.busy ? t(FORM_SUBMITTING) : t(FORM_SUBMIT)}
+            </Form.Button.Label>
           </Form.Button>
         </div>
 
-        {props.busy && <Spinner label="Solicitando captura…" />}
+        {props.busy && <Spinner label={t(FORM_LOADING)} />}
 
-        {form.loginActive && <Text>Conclua ou cancele a conexão da conta antes de arquivar.</Text>}
+        {form.loginActive && <Text>{t(FORM_LOGIN_ACTIVE)}</Text>}
       </Form>
     </ArchiveSection>
   );

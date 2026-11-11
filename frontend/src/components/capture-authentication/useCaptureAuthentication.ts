@@ -1,14 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useTranslation } from '@lemuel-manske/i18n/react';
 
-import { ButtonVariant, useButton } from "@lemuel-manske/components";
+import { AUTH_CLOSE, AUTH_CONNECT, AUTH_INVALID_URL } from '../../i18n/message-ids';
 
-import { useAccessibility } from "@lemuel-manske/utils";
+import { useEffect, useRef, useState } from 'react';
 
-import { isLoginActive } from "../../lib/login";
+import { ButtonVariant, useButton } from '@lemuel-manske/components';
 
-import type { BrowserProfile } from "../../types/capture";
+import { useAccessibility } from '@lemuel-manske/utils';
 
-import type { CaptureAuthenticationProps } from "./types";
+import { isLoginActive } from '../../lib/login';
+
+import type { BrowserProfile } from '../../types/capture';
+
+import type { CaptureAuthenticationProps } from './types';
 
 function useCaptureAuthentication({
   url,
@@ -19,9 +23,11 @@ function useCaptureAuthentication({
   onStart,
   onDelete,
 }: CaptureAuthenticationProps) {
+  const { t } = useTranslation();
+
   const [connecting, setConnecting] = useState(false);
 
-  const [loginUrl, setLoginUrl] = useState("");
+  const [loginUrl, setLoginUrl] = useState('');
 
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +44,7 @@ function useCaptureAuthentication({
   const targetUrl = loginUrl.trim() || url.trim();
 
   const connectButton = useButton({
-    children: connecting ? "Fechar nova conexão" : "Conectar nova conta",
+    children: connecting ? t(AUTH_CLOSE) : t(AUTH_CONNECT),
     variant: ButtonVariant.TERTIARY,
     disabled: busy || active,
     onClick: () => setConnecting((current) => !current),
@@ -60,9 +66,9 @@ function useCaptureAuthentication({
     try {
       const parsed = new URL(targetUrl);
 
-      if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("Invalid protocol");
+      if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('Invalid protocol');
     } catch {
-      setError("Informe uma URL válida, começando com http:// ou https://.");
+      setError(t(AUTH_INVALID_URL));
 
       return;
     }
@@ -70,7 +76,7 @@ function useCaptureAuthentication({
     const created = await onStart(targetUrl);
 
     if (created) {
-      setLoginUrl("");
+      setLoginUrl('');
 
       setConnecting(false);
     }
@@ -93,7 +99,7 @@ function useCaptureAuthentication({
   return {
     connecting,
     connectionId,
-    connectButton: { ...connectButton, "aria-expanded": connecting, "aria-controls": connectionId },
+    connectButton: { ...connectButton, 'aria-expanded': connecting, 'aria-controls': connectionId },
     loginUrl,
     setLoginUrl,
     error,

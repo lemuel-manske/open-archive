@@ -1,110 +1,152 @@
-import { Button, ButtonVariant, Form, Spinner, Text, TextSize } from "@lemuel-manske/components";
+import { useLocale } from '../../i18n/useLocale';
 
-import { formatDate } from "../../lib/dates";
+import { useTranslation } from '@lemuel-manske/i18n/react';
 
-import { ArchiveSection } from "../archive-section/ArchiveSection";
+import {
+  CAPTURE_REMOVE_CONFIRM,
+  CAPTURE_REMOVE_DESCRIPTION,
+  CAPTURE_REMOVE_FALLBACK,
+  CAPTURE_REMOVE_TITLE,
+  COLLECTION_COUNT,
+  COLLECTION_KICKER,
+  COLLECTION_VERSIONS,
+  COLLECTION_LATEST,
+  LAYOUT_DOCUMENT_TYPE,
+  COLLECTION_DESCRIPTION,
+  COLLECTION_EMPTY,
+  COLLECTION_LOADING,
+  COLLECTION_NO_RESULTS,
+  COLLECTION_PLACEHOLDER,
+  COLLECTION_REFRESH,
+  COLLECTION_SEARCH,
+  COLLECTION_TIMELINE,
+  COLLECTION_TITLE,
+} from '../../i18n/message-ids';
 
-import { ConfirmationDialog } from "../confirmation-dialog/ConfirmationDialog";
+import {
+  Button,
+  ButtonVariant,
+  Form,
+  Heading,
+  HeadingSize,
+  Link,
+  Spinner,
+  Text,
+  Timeline,
+} from '@lemuel-manske/components';
 
-import { CaptureVersion } from "./CaptureVersion";
+import { formatDate } from '../../lib/dates';
 
-import type { CaptureListProps } from "./types";
+import { ArchiveSection } from '../archive-section/ArchiveSection';
 
-import { useCaptureList } from "./useCaptureList";
+import { ConfirmationDialog } from '../confirmation-dialog/ConfirmationDialog';
 
-import styles from "./CaptureList.module.css";
+import { CaptureVersion } from './CaptureVersion';
+
+import type { CaptureListProps } from './types';
+
+import { useCaptureList } from './useCaptureList';
+
+import styles from './CaptureList.module.css';
 
 function CaptureList(props: CaptureListProps) {
+  const { t } = useTranslation();
+
+  const locale = useLocale();
+
   const collection = useCaptureList(props);
 
   return (
     <ArchiveSection
       id="collection"
-      title="Sites arquivados"
-      description="Expanda um site para consultar e gerenciar suas versões."
+      title={t(COLLECTION_TITLE)}
+      kicker={t(COLLECTION_KICKER)}
+      description={t(COLLECTION_DESCRIPTION)}
       sectionRef={collection.sectionRef}
       actions={
         <Button variant={ButtonVariant.TERTIARY} onClick={() => void props.onRefresh()}>
-          <Button.Label>Atualizar histórico</Button.Label>
+          <Button.Label>{t(COLLECTION_REFRESH)}</Button.Label>
         </Button>
       }
     >
       <div className={styles.tools}>
         <Form.Field>
-          <Form.Field.Label>Buscar no acervo</Form.Field.Label>
+          <Form.Field.Label>{t(COLLECTION_SEARCH)}</Form.Field.Label>
 
           <Form.Field.Control>
             <Form.Input
               type="search"
               value={collection.query}
               onChange={(event) => collection.setQuery(event.target.value)}
-              placeholder="URL do site"
+              placeholder={t(COLLECTION_PLACEHOLDER)}
             />
           </Form.Field.Control>
         </Form.Field>
 
         <p role="status" className={styles.count}>
-          {collection.totalGroups}{" "}
-          {collection.totalGroups === 1 ? "site preservado" : "sites preservados"} ·{" "}
-          {props.captures.length} {props.captures.length === 1 ? "captura" : "capturas"}
+          {t(COLLECTION_COUNT, { sites: collection.totalGroups, captures: props.captures.length })}
         </p>
       </div>
 
       {props.loading && props.captures.length === 0 ? (
-        <Spinner label="Carregando histórico…" />
+        <Spinner label={t(COLLECTION_LOADING)} />
       ) : collection.groups.length === 0 ? (
-        <Text>
-          {collection.totalGroups === 0
-            ? "Ainda não há capturas. Comece arquivando uma URL."
-            : "Nenhum site encontrado para esta busca."}
-        </Text>
+        <Text>{collection.totalGroups === 0 ? t(COLLECTION_EMPTY) : t(COLLECTION_NO_RESULTS)}</Text>
       ) : (
-        <ul className={styles.groups}>
+        <div className={styles.groups}>
           {collection.groups.map((group) => (
-            <li key={group.url}>
-              <details className={styles.group}>
-                <summary className={styles.summary}>
-                  <span className={styles.groupHeading}>
-                    <span className={styles.url}>{group.url}</span>
+            <section key={group.url} aria-label={group.url} className={styles.group}>
+              <header className={styles.recordHeader}>
+                <Text className={styles.category}>{t(LAYOUT_DOCUMENT_TYPE)}</Text>
+                <Heading level={3} size={HeadingSize.SMALL} className={styles.domain}>
+                  {new URL(group.url).hostname}
+                </Heading>
+                <Link href={group.url} target="_blank" className={styles.url}>
+                  {group.url}
+                </Link>
+                <Text className={styles.versionCount}>
+                  {t(COLLECTION_VERSIONS, { count: group.versions.length })}
+                </Text>
+                <dl className={styles.facts}>
+                  <div>
+                    <dt>{t(COLLECTION_LATEST)}</dt>
+                    <dd>
+                      <time dateTime={group.versions[0].created_at}>
+                        {formatDate(group.versions[0].created_at, locale)}
+                      </time>
+                    </dd>
+                  </div>
+                </dl>
+              </header>
 
-                    <Text as="span" size={TextSize.SMALL}>
-                      {group.versions.length} {group.versions.length === 1 ? "versão" : "versões"} ·
-                      Última captura: {formatDate(group.versions[0].created_at)}
-                    </Text>
-                  </span>
-
-                  <span aria-hidden="true" className={styles.chevron}>
-                    ›
-                  </span>
-                </summary>
-
-                <ul className={styles.versions}>
-                  {group.versions.map((capture) => (
-                    <CaptureVersion
-                      key={capture._id}
-                      capture={capture}
-                      selected={props.selectedId === capture._id}
-                      deletingId={props.deletingId}
-                      onSelect={props.onSelect}
-                      onRequestRemoval={collection.requestRemoval}
-                    />
-                  ))}
-                </ul>
-              </details>
-            </li>
+              <Timeline aria-label={t(COLLECTION_TIMELINE, { url: group.url })}>
+                {group.versions.map((capture) => (
+                  <CaptureVersion
+                    key={capture._id}
+                    capture={capture}
+                    selected={props.selectedId === capture._id}
+                    deletingId={props.deletingId}
+                    onSelect={props.onSelect}
+                    onRequestRemoval={collection.requestRemoval}
+                  />
+                ))}
+              </Timeline>
+            </section>
           ))}
-        </ul>
+        </div>
       )}
 
       <ConfirmationDialog
         open={collection.captureToDelete !== null}
-        title="Excluir captura?"
+        title={t(CAPTURE_REMOVE_TITLE)}
         description={
           collection.captureToDelete
-            ? `A captura de ${formatDate(collection.captureToDelete.created_at)} e seu arquivo WACZ serão removidos permanentemente.`
-            : "O arquivo WACZ será removido permanentemente."
+            ? t(CAPTURE_REMOVE_DESCRIPTION, {
+                date: formatDate(collection.captureToDelete.created_at, locale),
+              })
+            : t(CAPTURE_REMOVE_FALLBACK)
         }
-        confirmLabel="Excluir captura"
+        confirmLabel={t(CAPTURE_REMOVE_CONFIRM)}
         onConfirm={collection.remove}
         onClose={collection.closeRemoval}
       />

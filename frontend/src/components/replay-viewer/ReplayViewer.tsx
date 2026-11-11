@@ -1,31 +1,37 @@
-import { createElement } from "react";
+import { useTranslation } from '@lemuel-manske/i18n/react';
 
-import { Button, ButtonVariant } from "@lemuel-manske/components";
+import { REPLAY_CLOSE, REPLAY_TITLE } from '../../i18n/message-ids';
 
-import { ArchiveSection } from "../archive-section/ArchiveSection";
+import { createElement } from 'react';
 
-import type { ReplayViewerProps } from "./types";
+import { Button, ButtonVariant } from '@lemuel-manske/components';
 
-import { useReplayViewer } from "./useReplayViewer";
+import { ArchiveSection } from '../archive-section/ArchiveSection';
 
-import styles from "./ReplayViewer.module.css";
+import type { ReplayViewerProps } from './types';
+
+import { useReplayViewer } from './useReplayViewer';
+
+import styles from './ReplayViewer.module.css';
 
 function ReplayViewer(props: ReplayViewerProps) {
+  const { t } = useTranslation();
+
   const viewer = useReplayViewer(props);
 
   return (
     <ArchiveSection
       id="replay"
-      title="Reprodução do arquivo"
+      title={t(REPLAY_TITLE)}
       description={props.capture.url}
       sectionRef={viewer.sectionRef}
       actions={
         <Button variant={ButtonVariant.SECONDARY} onClick={props.onClose}>
-          <Button.Label>Fechar reprodução</Button.Label>
+          <Button.Label>{t(REPLAY_CLOSE)}</Button.Label>
         </Button>
       }
     >
-      {createElement("replay-web-page", { ...viewer.replay, className: styles.frame })}
+      {createElement('replay-web-page', { ...viewer.replay, className: styles.frame })}
     </ArchiveSection>
   );
 }

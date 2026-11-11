@@ -1,13 +1,14 @@
-import type { ReactNode, Ref } from "react";
+import type { ReactNode, Ref } from 'react';
 
-import { Heading, Text } from "@lemuel-manske/components";
+import { Heading, Text } from '@lemuel-manske/components';
 
-import styles from "./ArchiveSection.module.css";
+import styles from './ArchiveSection.module.css';
 
 interface ArchiveSectionProps {
   id: string;
 
   title: string;
+  kicker?: string;
 
   description?: string;
 
@@ -21,6 +22,7 @@ interface ArchiveSectionProps {
 function ArchiveSection({
   id,
   title,
+  kicker,
   description,
   actions,
   children,
@@ -38,7 +40,10 @@ function ArchiveSection({
     >
       <header className={styles.header}>
         <div className={styles.heading}>
-          <Heading id={titleId}>{title}</Heading>
+          {kicker && <Text className={styles.kicker}>{kicker}</Text>}
+          <Heading id={titleId} className={styles.title}>
+            {title}
+          </Heading>
 
           {description && <Text className={styles.description}>{description}</Text>}
         </div>

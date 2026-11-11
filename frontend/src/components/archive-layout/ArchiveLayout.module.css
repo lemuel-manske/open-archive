@@ -1,4 +1,5 @@
 .layout {
+  --archive-rule: #c8c8b9;
   position: relative;
   isolation: isolate;
   min-height: 100vh;
@@ -10,136 +11,232 @@
 .header,
 .main,
 .footer {
-  width: min(1280px, 100%);
+  width: min(1440px, 100%);
   margin-inline: auto;
-  padding-inline: var(--ui-space-48);
+  padding-inline: clamp(20px, 5vw, 80px);
 }
 
 .header {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--ui-space-24);
+  flex-wrap: wrap;
+  gap: var(--ui-space-16);
   padding-block: var(--ui-space-24);
-  border-bottom: var(--ui-border-width) solid var(--ui-color-border);
+  border-bottom: 1px solid var(--archive-rule);
 }
 
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-24);
+}
 .header .brand {
   font-family: var(--ui-font-display);
-  font-size: 2rem;
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1;
   text-decoration: none;
+  color: var(--ui-color-text-primary);
+  letter-spacing: -0.05em;
 }
-
+.brandMark {
+  display: inline-block;
+  margin-inline-start: 10px;
+  font-size: 1.1rem;
+  vertical-align: middle;
+  color: var(--ui-action-primary);
+}
+.institution {
+  max-width: 16ch;
+  font: 10px/1.5 var(--ui-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ui-color-text-secondary);
+}
 .navigation {
   display: flex;
   flex-wrap: wrap;
   gap: var(--ui-space-24);
 }
-
 .navigation a {
   display: inline-flex;
   align-items: center;
   min-height: var(--ui-control-small);
+  font: 12px var(--ui-font-mono);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
 }
-
+.navigation a:hover {
+  color: var(--ui-color-text-primary);
+}
 .main {
   flex: 1;
-  padding-block: var(--ui-space-64);
+  min-width: 0;
 }
 
 .introduction {
+  position: relative;
   display: grid;
-  gap: var(--ui-space-16);
-  max-width: 800px;
-  margin-bottom: var(--ui-space-64);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: center;
+  padding-top: clamp(40px, 6vw, 88px);
+  margin-bottom: var(--ui-space-32);
 }
 
-.eyebrow {
-  color: var(--ui-color-text-secondary);
-  font-style: italic;
+.heroCopy {
+  position: relative;
+  z-index: 1;
+  padding-bottom: var(--ui-space-48);
 }
-
+.heroCopy .eyebrow {
+  max-width: 42ch;
+  font: 10px/1.8 var(--ui-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ui-action-primary);
+  margin-bottom: var(--ui-space-32);
+}
 .introduction h1.title {
-  font-size: clamp(2.75rem, 6vw, 5rem);
+  max-width: 11ch;
+  font-size: clamp(4.5rem, 7.6vw, 7.4rem);
+  line-height: 0.94;
+  letter-spacing: -0.055em;
 }
-
-.main > [role='alert'] {
-  margin-bottom: var(--ui-space-24);
+.title > span {
+  display: block;
 }
-
-.footer {
-  padding-block: var(--ui-space-24);
-  border-top: var(--ui-border-width) solid var(--ui-color-border);
+.title > em {
+  display: block;
+  font-weight: 400;
+  color: var(--ui-action-primary);
+}
+.heroCopy .heroDescription {
+  max-width: 29ch;
+  margin-top: var(--ui-space-32);
+  font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+  line-height: 1.45;
   color: var(--ui-color-text-secondary);
 }
-
+.heroArt {
+  min-width: 0;
+  width: 112%;
+  max-width: 560px;
+  justify-self: end;
+  margin-left: -2%;
+  transform: translateY(-8px);
+}
+.heroIndex {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ui-space-16);
+  border-top: 1px solid var(--archive-rule);
+  padding-block: var(--ui-space-16);
+  font: 10px/1.5 var(--ui-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ui-color-text-secondary);
+}
+.main > [role='alert'] {
+  margin-block: var(--ui-space-24);
+}
+.footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--ui-space-24);
+  padding-block: var(--ui-space-32);
+  border-top: 1px solid var(--archive-rule);
+}
+.footer p {
+  color: var(--ui-color-text-secondary);
+  font-size: var(--ui-text-small);
+}
+.footerBrand {
+  font: italic 1.8rem var(--ui-font-display);
+}
 .skipLink {
   position: absolute;
   top: var(--ui-space-8);
   left: var(--ui-space-16);
-  z-index: 1;
+  z-index: 5;
   padding: var(--ui-space-12);
   background: var(--ui-color-background);
   transform: translateY(-200%);
 }
-
 .skipLink:focus {
   transform: translateY(0);
 }
 
-@media (min-width: 1280px) {
-  .layout::before,
-  .layout::after {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    width: calc((100% - 1120px) / 2);
-    z-index: -1;
-    background-image: url('./web-paper.svg');
-    background-repeat: repeat-y;
-    background-size: max(280px, calc(100% - 16px)) auto;
-    opacity: 0.6;
-    pointer-events: none;
+@media (max-width: 1000px) {
+  .identity {
+    gap: var(--ui-space-16);
   }
-
-  .layout::before {
-    left: 0;
-    background-position: right 16px top 40px;
+  .introduction h1.title {
+    font-size: clamp(4rem, 8.8vw, 6rem);
   }
-
-  .layout::after {
-    right: 0;
-    background-position: left 16px top 280px;
-  }
-
-  .header,
-  .main,
-  .footer {
-    width: 1120px;
+  .heroArt {
+    width: 110%;
+    margin-left: -5%;
   }
 }
 
-@media (max-width: 760px) {
-  .header,
-  .main,
-  .footer {
-    padding-inline: var(--ui-space-24);
+@media (max-width: 700px) {
+  .identity .institution {
+    display: none;
   }
-
-  .main {
-    padding-block: var(--ui-space-32);
+  .header {
+    padding-block: var(--ui-space-16);
   }
-
+  .header .brand {
+    font-size: 1.9rem;
+  }
+  .navigation {
+    gap: var(--ui-space-16);
+  }
   .introduction {
-    margin-bottom: var(--ui-space-32);
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: var(--ui-space-48);
+  }
+  .heroCopy {
+    padding-bottom: var(--ui-space-32);
+  }
+  .introduction h1.title {
+    font-size: clamp(3.65rem, 13.5vw, 6.5rem);
+    max-width: 13ch;
+  }
+  .heroCopy .eyebrow {
+    margin-bottom: var(--ui-space-24);
+  }
+  .heroCopy .heroDescription {
+    margin-top: var(--ui-space-24);
+    max-width: 32ch;
+  }
+  .heroArt {
+    width: min(100%, 400px);
+    justify-self: end;
+    margin: -16px -6px 24px 0;
+    transform: none;
+  }
+  .heroIndex {
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+  .heroIndex span:last-child {
+    text-align: right;
+  }
+  .footer .institution {
+    display: none;
   }
 }
 
 @media (max-width: 480px) {
-  .header,
-  .main,
-  .footer {
-    padding-inline: var(--ui-space-16);
+  .heroArt {
+    display: none;
+  }
+  .navigation a {
+    font-size: 11px;
   }
 }

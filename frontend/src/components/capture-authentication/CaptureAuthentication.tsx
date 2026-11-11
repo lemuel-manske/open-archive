@@ -1,25 +1,45 @@
-import { Alert, ButtonVariant, Form } from "@lemuel-manske/components";
+import { useTranslation } from '@lemuel-manske/i18n/react';
 
-import { ConfirmationDialog } from "../confirmation-dialog/ConfirmationDialog";
+import {
+  AUTH_ACCOUNT,
+  AUTH_ACCOUNT_FALLBACK,
+  AUTH_DESCRIPTION,
+  AUTH_LEGEND,
+  AUTH_LOGIN_HINT,
+  AUTH_LOGIN_URL,
+  AUTH_PUBLIC,
+  AUTH_REMOVE,
+  AUTH_REMOVE_CONFIRM,
+  AUTH_REMOVE_DESCRIPTION,
+  AUTH_REMOVE_TITLE,
+  AUTH_START,
+  AUTH_STARTING,
+} from '../../i18n/message-ids';
 
-import { LoginSessionNotice } from "./LoginSessionNotice";
+import { Alert, ButtonVariant, Form } from '@lemuel-manske/components';
 
-import type { CaptureAuthenticationProps } from "./types";
+import { ConfirmationDialog } from '../confirmation-dialog/ConfirmationDialog';
 
-import { useCaptureAuthentication } from "./useCaptureAuthentication";
+import { LoginSessionNotice } from './LoginSessionNotice';
 
-import styles from "./CaptureAuthentication.module.css";
+import type { CaptureAuthenticationProps } from './types';
+
+import { useCaptureAuthentication } from './useCaptureAuthentication';
+
+import styles from './CaptureAuthentication.module.css';
 
 function CaptureAuthentication(props: CaptureAuthenticationProps) {
+  const { t } = useTranslation();
+
   const authentication = useCaptureAuthentication(props);
 
   return (
-    <Form.Fieldset>
-      <Form.Fieldset.Legend>Sessão do site</Form.Fieldset.Legend>
+    <Form.Fieldset className={styles.fieldset}>
+      <Form.Fieldset.Legend className={styles.legend}>{t(AUTH_LEGEND)}</Form.Fieldset.Legend>
 
       <div className={styles.content}>
         <Form.Field disabled={props.busy || authentication.active}>
-          <Form.Field.Label>Conta para esta captura</Form.Field.Label>
+          <Form.Field.Label>{t(AUTH_ACCOUNT)}</Form.Field.Label>
 
           <Form.Field.Control>
             <Form.Combobox
@@ -28,7 +48,7 @@ function CaptureAuthentication(props: CaptureAuthenticationProps) {
               onChange={(event) => props.onSelect(event.target.value)}
               name="profile"
             >
-              <Form.Combobox.Option value="">Página pública (sem login)</Form.Combobox.Option>
+              <Form.Combobox.Option value="">{t(AUTH_PUBLIC)}</Form.Combobox.Option>
 
               {props.profiles.map((profile) => (
                 <Form.Combobox.Option key={profile._id} value={profile._id}>
@@ -38,10 +58,7 @@ function CaptureAuthentication(props: CaptureAuthenticationProps) {
             </Form.Combobox>
           </Form.Field.Control>
 
-          <Form.Field.Description>
-            Para sites com login, conecte uma conta uma vez e reutilize a sessão nas capturas
-            seguintes.
-          </Form.Field.Description>
+          <Form.Field.Description>{t(AUTH_DESCRIPTION)}</Form.Field.Description>
         </Form.Field>
 
         <div className={styles.actions}>
@@ -53,7 +70,7 @@ function CaptureAuthentication(props: CaptureAuthenticationProps) {
               disabled={props.busy || authentication.active}
               onClick={authentication.requestRemoval}
             >
-              <Form.Button.Label>Remover conta</Form.Button.Label>
+              <Form.Button.Label>{t(AUTH_REMOVE)}</Form.Button.Label>
             </Form.Button>
           )}
         </div>
@@ -66,20 +83,18 @@ function CaptureAuthentication(props: CaptureAuthenticationProps) {
             <Form.Field
               disabled={props.busy || !authentication.connecting || authentication.active}
             >
-              <Form.Field.Label>URL de login do site</Form.Field.Label>
+              <Form.Field.Label>{t(AUTH_LOGIN_URL)}</Form.Field.Label>
 
               <Form.Field.Control>
                 <Form.Input
                   type="url"
-                  placeholder={props.url.trim() || "https://site.com/login"}
+                  placeholder={props.url.trim() || 'https://site.com/login'}
                   value={authentication.loginUrl}
                   onChange={(event) => authentication.setLoginUrl(event.target.value)}
                 />
               </Form.Field.Control>
 
-              <Form.Field.Description>
-                Deixe em branco para usar a URL inicial da captura.
-              </Form.Field.Description>
+              <Form.Field.Description>{t(AUTH_LOGIN_HINT)}</Form.Field.Description>
             </Form.Field>
 
             <Form.Button
@@ -87,7 +102,7 @@ function CaptureAuthentication(props: CaptureAuthenticationProps) {
               disabled={!authentication.canStart}
               onClick={() => void authentication.start()}
             >
-              <Form.Button.Label>{props.busy ? "Iniciando…" : "Iniciar login"}</Form.Button.Label>
+              <Form.Button.Label>{props.busy ? t(AUTH_STARTING) : t(AUTH_START)}</Form.Button.Label>
             </Form.Button>
           </div>
         </div>
@@ -99,9 +114,11 @@ function CaptureAuthentication(props: CaptureAuthenticationProps) {
 
       <ConfirmationDialog
         open={authentication.profileToDelete !== null}
-        title="Remover conta salva?"
-        description={`A sessão de ${authentication.profileToDelete?.name ?? "esta conta"} será removida. As capturas existentes serão preservadas.`}
-        confirmLabel="Excluir conta"
+        title={t(AUTH_REMOVE_TITLE)}
+        description={t(AUTH_REMOVE_DESCRIPTION, {
+          account: authentication.profileToDelete?.name ?? t(AUTH_ACCOUNT_FALLBACK),
+        })}
+        confirmLabel={t(AUTH_REMOVE_CONFIRM)}
         onConfirm={authentication.remove}
         onClose={authentication.closeRemoval}
       />

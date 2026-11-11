@@ -1,10 +1,16 @@
-import { Alert, Button, ButtonVariant, Dialog, Spinner, Text } from "@lemuel-manske/components";
+import { useTranslation } from '@lemuel-manske/i18n/react';
 
-import type { ConfirmationDialogProps } from "./types";
+import { COMMON_CANCEL, COMMON_DELETING } from '../../i18n/message-ids';
 
-import { useConfirmationDialog } from "./useConfirmationDialog";
+import { Alert, Button, ButtonVariant, Dialog, Spinner, Text } from '@lemuel-manske/components';
+
+import type { ConfirmationDialogProps } from './types';
+
+import { useConfirmationDialog } from './useConfirmationDialog';
 
 function ConfirmationDialog(props: ConfirmationDialogProps) {
+  const { t } = useTranslation();
+
   const confirmation = useConfirmationDialog(props);
 
   return (
@@ -14,13 +20,13 @@ function ConfirmationDialog(props: ConfirmationDialogProps) {
       onOpenChange={(open) => {
         if (!open) confirmation.close();
       }}
-      closeLabel="Cancelar"
+      closeLabel={t(COMMON_CANCEL)}
     >
       <Text>{props.description}</Text>
 
       {confirmation.error && <Alert urgency="assertive">{confirmation.error}</Alert>}
 
-      {confirmation.pending && <Spinner label="Excluindo…" />}
+      {confirmation.pending && <Spinner label={t(COMMON_DELETING)} />}
 
       <Button
         variant={ButtonVariant.SECONDARY}

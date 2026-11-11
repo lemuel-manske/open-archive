@@ -1,8 +1,20 @@
-import { Alert, Button, ButtonVariant, Link, Spinner, Text } from "@lemuel-manske/components";
+import { useTranslation } from '@lemuel-manske/i18n/react';
 
-import type { LoginSession } from "../../types/capture";
+import {
+  AUTH_CANCEL,
+  AUTH_CANCELLING,
+  AUTH_FAILED,
+  AUTH_INSTRUCTIONS,
+  AUTH_OPEN,
+  AUTH_PREPARING,
+  AUTH_SAVED,
+} from '../../i18n/message-ids';
 
-import styles from "./CaptureAuthentication.module.css";
+import { Alert, Button, ButtonVariant, Link, Spinner, Text } from '@lemuel-manske/components';
+
+import type { LoginSession } from '../../types/capture';
+
+import styles from './CaptureAuthentication.module.css';
 
 interface LoginSessionNoticeProps {
   session: LoginSession | null;
@@ -13,45 +25,36 @@ interface LoginSessionNoticeProps {
 }
 
 function LoginSessionNotice({ session, busy, onCancel }: LoginSessionNoticeProps) {
+  const { t } = useTranslation();
+
   if (!session) return null;
 
-  if (session.status === "completed") {
-    return <Alert>Sessão salva. A conta está selecionada para a próxima captura.</Alert>;
+  if (session.status === 'completed') {
+    return <Alert>{t(AUTH_SAVED)}</Alert>;
   }
 
-  if (session.status === "failed" || session.status === "cancelled") {
-    return (
-      <Alert>{session.error || "A conexão não foi concluída. Você pode tentar novamente."}</Alert>
-    );
+  if (session.status === 'failed' || session.status === 'cancelled') {
+    return <Alert>{session.error || t(AUTH_FAILED)}</Alert>;
   }
 
   return (
     <div className={styles.session}>
-      {session.status === "running" ? (
-        <Text>
-          Entre na sua conta na janela do Browsertrix e clique em <strong>Create Profile</strong> ao
-          terminar.
-        </Text>
+      {session.status === 'running' ? (
+        <Text>{t(AUTH_INSTRUCTIONS)}</Text>
       ) : (
-        <Spinner
-          label={
-            session.status === "cancelling"
-              ? "Cancelando conexão…"
-              : "Preparando o navegador para conectar sua conta…"
-          }
-        />
+        <Spinner label={session.status === 'cancelling' ? t(AUTH_CANCELLING) : t(AUTH_PREPARING)} />
       )}
 
       <div className={styles.actions}>
         {session.browser_url && (
           <Link href={session.browser_url} target="_blank">
-            Abrir navegador de login
+            {t(AUTH_OPEN)}
           </Link>
         )}
 
-        {session.status !== "cancelling" && (
+        {session.status !== 'cancelling' && (
           <Button variant={ButtonVariant.SECONDARY} disabled={busy} onClick={() => void onCancel()}>
-            <Button.Label>Cancelar conexão</Button.Label>
+            <Button.Label>{t(AUTH_CANCEL)}</Button.Label>
           </Button>
         )}
       </div>

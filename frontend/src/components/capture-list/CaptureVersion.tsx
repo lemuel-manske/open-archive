@@ -1,19 +1,39 @@
-import { Button, ButtonVariant, Link, Text, TextSize } from "@lemuel-manske/components";
+import { useLocale } from '../../i18n/useLocale';
 
-import { captureArchive } from "../../lib/api";
+import { useTranslation } from '@lemuel-manske/i18n/react';
 
-import { formatDate } from "../../lib/dates";
+import {
+  CAPTURE_AUTHENTICATED,
+  CAPTURE_COMPLETED,
+  CAPTURE_FAILED,
+  CAPTURE_DOWNLOAD,
+  CAPTURE_RECORD_ID,
+  CAPTURE_PENDING,
+  CAPTURE_PLAY,
+  CAPTURE_PLAYING,
+  CAPTURE_RETRY,
+  CAPTURE_RUNNING,
+  COMMON_DELETE,
+  COMMON_DELETING,
+} from '../../i18n/message-ids';
 
-import type { Capture, CaptureStatus } from "../../types/capture";
+import {
+  Button,
+  ButtonVariant,
+  Link,
+  Spinner,
+  Text,
+  TextSize,
+  Timeline,
+} from '@lemuel-manske/components';
 
-import styles from "./CaptureList.module.css";
+import { captureArchive } from '../../lib/api';
 
-const statusLabels: Record<CaptureStatus, string> = {
-  pending: "Pendente",
-  running: "Capturando",
-  completed: "Concluída",
-  failed: "Falhou",
-};
+import { formatCalendarDate, formatDate, formatTime } from '../../lib/dates';
+
+import type { Capture, CaptureStatus } from '../../types/capture';
+
+import styles from './CaptureList.module.css';
 
 interface CaptureVersionProps {
   capture: Capture;
@@ -34,51 +54,86 @@ function CaptureVersion({
   onSelect,
   onRequestRemoval,
 }: CaptureVersionProps) {
+  const { t } = useTranslation();
+
+  const locale = useLocale();
+
+  const statusLabels: Record<CaptureStatus, string> = {
+    pending: t(CAPTURE_PENDING),
+    running: t(CAPTURE_RUNNING),
+    completed: t(CAPTURE_COMPLETED),
+    failed: t(CAPTURE_FAILED),
+  };
+
   return (
-    <li className={styles.version}>
-      <div className={styles.metadata}>
-        <Text as="span">{statusLabels[capture.status]}</Text>
+    <Timeline.Item
+      className={styles.timelineItem}
+      label={
+        <div className={styles.itemHeader}>
+          <time className={styles.date} dateTime={capture.created_at}>
+            {formatCalendarDate(capture.created_at, locale)}
+          </time>
 
-        <time dateTime={capture.created_at}>{formatDate(capture.created_at)}</time>
+          {capture.status === 'running' ? (
+            <span className={styles.captureStatus}>
+              <Spinner label={statusLabels.running} />
 
-        <Text size={TextSize.SMALL}>
-          Profundidade {capture.depth} · Limite {capture.limit} · Tentativa {capture.attempts}
+              <span aria-hidden="true">{statusLabels.running}</span>
+            </span>
+          ) : (
+            <Text as="span" size={TextSize.SMALL} className={styles.status}>
+              {statusLabels[capture.status]}
+            </Text>
+          )}
+        </div>
+      }
+      current={selected}
+    >
+      <div className={styles.version}>
+        <Text className={styles.time}>
+          <time dateTime={capture.created_at}>{formatTime(capture.created_at, locale)}</time>
         </Text>
 
-        {capture.status === "pending" && capture.next_attempt_at && (
-          <Text size={TextSize.SMALL}>Nova tentativa: {formatDate(capture.next_attempt_at)}</Text>
-        )}
-
-        {capture.profile_id && <Text size={TextSize.SMALL}>Captura autenticada</Text>}
-
-        {capture.error && <Text className={styles.error}>{capture.error}</Text>}
-      </div>
-
-      <div className={styles.actions}>
-        {capture.status === "completed" && (
-          <>
-            <Button
-              variant={selected ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY}
-              onClick={() => onSelect(capture._id)}
-            >
-              <Button.Label>{selected ? "Em reprodução" : "Reproduzir"}</Button.Label>
+        <div className={styles.actions}>
+          {capture.status === 'completed' && (
+            <Button variant={ButtonVariant.PRIMARY} onClick={() => onSelect(capture._id)}>
+              <Button.Label>{selected ? t(CAPTURE_PLAYING) : t(CAPTURE_PLAY)}</Button.Label>
             </Button>
+          )}
 
-            <Link href={captureArchive(capture._id)} download>
-              Baixar WACZ
+          {capture.status === 'completed' && (
+            <Link href={captureArchive(capture._id)} download className={styles.download}>
+              {t(CAPTURE_DOWNLOAD)}
             </Link>
-          </>
-        )}
+          )}
+          <Button
+            className={styles.remove}
+            variant={ButtonVariant.TERTIARY}
+            disabled={capture.status === 'running' || deletingId !== null}
+            onClick={() => onRequestRemoval(capture)}
+          >
+            <Button.Label>
+              {deletingId === capture._id ? t(COMMON_DELETING) : t(COMMON_DELETE)}
+            </Button.Label>
+          </Button>
+        </div>
 
-        <Button
-          variant={ButtonVariant.TERTIARY}
-          disabled={capture.status === "running" || deletingId !== null}
-          onClick={() => onRequestRemoval(capture)}
-        >
-          <Button.Label>{deletingId === capture._id ? "Excluindo…" : "Excluir"}</Button.Label>
-        </Button>
+        <div className={styles.metadata}>
+          <Text size={TextSize.SMALL} className={styles.recordId}>
+            {t(CAPTURE_RECORD_ID, { id: capture._id })}
+          </Text>
+          {capture.status === 'pending' && capture.next_attempt_at && (
+            <Text size={TextSize.SMALL}>
+              {t(CAPTURE_RETRY, { date: formatDate(capture.next_attempt_at, locale) })}
+            </Text>
+          )}
+
+          {capture.profile_id && <Text size={TextSize.SMALL}>{t(CAPTURE_AUTHENTICATED)}</Text>}
+
+          {capture.error && <Text className={styles.error}>{capture.error}</Text>}
+        </div>
       </div>
-    </li>
+    </Timeline.Item>
   );
 }
 

@@ -1,11 +1,24 @@
-const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
-  dateStyle: "short",
-  timeStyle: "medium",
-  timeZone: "America/Sao_Paulo",
-});
+const timeZone = 'America/Sao_Paulo';
 
-function formatDate(value: string): string {
-  return dateFormatter.format(new Date(value));
+function formatDate(value: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'short',
+    timeStyle: 'medium',
+    timeZone,
+  }).format(new Date(value));
 }
 
-export { formatDate };
+function formatCalendarDate(value: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone,
+  }).format(new Date(value));
+}
+
+function formatTime(value: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { timeStyle: 'medium', timeZone }).format(new Date(value));
+}
+
+export { formatCalendarDate, formatDate, formatTime };
