@@ -1,16 +1,13 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1.4
 
 FROM node:22-alpine AS build
 
 WORKDIR /app
 
-COPY --parents \
-  frontend/./package.json \
-  frontend/./package-lock.json \
-  frontend/./packages/*/package.json \
-  ./
+COPY frontend/package*.json frontend/.npmrc ./
 
-RUN npm ci
+RUN --mount=type=secret,id=npm_token,target=/run/secrets/npm_token \
+    GH_TOKEN="$(cat /run/secrets/npm_token)" npm ci
 
 COPY frontend/ ./
 
