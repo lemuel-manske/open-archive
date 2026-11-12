@@ -6,8 +6,5 @@ Run commands from the repository root:
 make install
 
 make start-fastapi-dev
+make start-worker-dev
 ```
-
-Start the worker separately with `make start-worker-dev`.
-
-Python modules live directly in `backend/`: `api`, `application`, `domain`, `infra`, and `worker`.
