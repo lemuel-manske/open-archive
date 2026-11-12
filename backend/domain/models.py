@@ -54,9 +54,9 @@ class Capture:
     depth: int
     limit: int
 
-    status: CaptureStatus
-
     created_at: datetime
+
+    status: CaptureStatus = "pending"
 
     archive_file_id: str | None = None
 

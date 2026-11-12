@@ -167,7 +167,6 @@ class CapturesDB(Captures):
             url=url,
             depth=depth,
             limit=limit,
-            status="pending",
             profile_id=profile_id,
             created_at=datetime.now(timezone.utc),
         )
