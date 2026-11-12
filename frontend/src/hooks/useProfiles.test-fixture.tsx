@@ -1,4 +1,4 @@
-import { useProfiles } from "./useProfiles";
+import { useProfiles } from './useProfiles';
 
 function ProfilesHook() {
   const authentication = useProfiles();
@@ -23,7 +23,7 @@ function ProfilesHook() {
 
       <button
         disabled={authentication.busy}
-        onClick={() => void authentication.start("https://example.org/")}
+        onClick={() => void authentication.start('https://example.org/')}
       >
         Conectar
       </button>
@@ -39,7 +39,7 @@ function ProfilesHook() {
         Remover
       </button>
 
-      <p role="status">{authentication.session?.status ?? "Sem sessão"}</p>
+      <p role="status">{authentication.session?.status ?? 'Sem sessão'}</p>
 
       {authentication.error && <p role="alert">{authentication.error}</p>}
     </div>

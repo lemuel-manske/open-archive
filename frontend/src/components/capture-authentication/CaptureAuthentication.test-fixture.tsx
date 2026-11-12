@@ -1,9 +1,9 @@
-import type { CaptureAuthenticationProps } from "./types";
+import type { CaptureAuthenticationProps } from './types';
 
 const authenticationProps: CaptureAuthenticationProps = {
-  url: "https://example.org/",
+  url: 'https://example.org/',
   profiles: [],
-  profileId: "",
+  profileId: '',
   session: null,
   busy: false,
   onSelect: () => {},

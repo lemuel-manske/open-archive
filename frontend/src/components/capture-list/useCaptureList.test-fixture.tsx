@@ -1,6 +1,6 @@
-import { captureListProps } from "./CaptureList.test-fixture";
+import { captureListProps } from './CaptureList.test-fixture';
 
-import { useCaptureList } from "./useCaptureList";
+import { useCaptureList } from './useCaptureList';
 
 function CaptureListHook() {
   const collection = useCaptureList(captureListProps);

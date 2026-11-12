@@ -14,7 +14,7 @@ import {
   FORM_URL,
 } from '../../i18n/message-ids';
 
-import { Form, Spinner, Text } from '@lemuel-manske/components';
+import { Button, Field, Form, Input, Spinner, Text } from '@lemuel-manske/components';
 
 import { ArchiveSection } from '../archive-section/ArchiveSection';
 
@@ -38,79 +38,77 @@ function CaptureForm(props: CaptureFormProps) {
       title={t(FORM_TITLE)}
       description={t(FORM_DESCRIPTION)}
     >
-      <Form
-        className={styles.form}
-        aria-label={t(FORM_NAME)}
-        onSubmit={(event) => void form.submit(event)}
-      >
-        <Form.Field disabled={props.busy} required>
-          <Form.Field.Label>{t(FORM_URL)}</Form.Field.Label>
+      <div className={styles.sheet}>
+        <Form aria-label={t(FORM_NAME)} onSubmit={(event) => void form.submit(event)}>
+          <Field disabled={props.busy} required>
+            <Field.Label>{t(FORM_URL)}</Field.Label>
 
-          <Form.Field.Control>
-            <Form.Input
-              type="url"
-              name="url"
-              placeholder="https://example.org/"
-              value={form.url}
-              onChange={(event) => form.setUrl(event.target.value)}
-            />
-          </Form.Field.Control>
-        </Form.Field>
-
-        <CaptureAuthentication
-          url={form.url}
-          profiles={props.profiles}
-          profileId={props.profileId}
-          session={props.session}
-          busy={props.busy || props.profileBusy}
-          onSelect={props.onSelectProfile}
-          onStart={props.onStartLogin}
-          onCancel={props.onCancelLogin}
-          onDelete={props.onDeleteProfile}
-        />
-
-        <div className={styles.options}>
-          <Form.Field disabled={props.busy} required>
-            <Form.Field.Label>{t(FORM_DEPTH)}</Form.Field.Label>
-
-            <Form.Field.Control>
-              <Form.Input
-                type="number"
-                name="depth"
-                min={0}
-                max={5}
-                value={form.depth}
-                onChange={(event) => form.setDepth(event.target.value)}
+            <Field.Control>
+              <Input
+                type="url"
+                name="url"
+                placeholder="https://example.org/"
+                value={form.url}
+                onChange={(event) => form.setUrl(event.target.value)}
               />
-            </Form.Field.Control>
-          </Form.Field>
+            </Field.Control>
+          </Field>
 
-          <Form.Field disabled={props.busy} required>
-            <Form.Field.Label>{t(FORM_LIMIT)}</Form.Field.Label>
+          <CaptureAuthentication
+            url={form.url}
+            profiles={props.profiles}
+            profileId={props.profileId}
+            session={props.session}
+            busy={props.busy || props.profileBusy}
+            onSelect={props.onSelectProfile}
+            onStart={props.onStartLogin}
+            onCancel={props.onCancelLogin}
+            onDelete={props.onDeleteProfile}
+          />
 
-            <Form.Field.Control>
-              <Form.Input
-                type="number"
-                name="limit"
-                min={1}
-                max={100}
-                value={form.limit}
-                onChange={(event) => form.setLimit(event.target.value)}
-              />
-            </Form.Field.Control>
-          </Form.Field>
+          <div className={styles.options}>
+            <Field disabled={props.busy} required>
+              <Field.Label>{t(FORM_DEPTH)}</Field.Label>
 
-          <Form.Button type="submit" disabled={form.submitDisabled}>
-            <Form.Button.Label>
-              {props.busy ? t(FORM_SUBMITTING) : t(FORM_SUBMIT)}
-            </Form.Button.Label>
-          </Form.Button>
-        </div>
+              <Field.Control>
+                <Input
+                  type="number"
+                  name="depth"
+                  min={0}
+                  max={5}
+                  value={form.depth}
+                  onChange={(event) => form.setDepth(event.target.value)}
+                />
+              </Field.Control>
+            </Field>
 
-        {props.busy && <Spinner label={t(FORM_LOADING)} />}
+            <Field disabled={props.busy} required>
+              <Field.Label>{t(FORM_LIMIT)}</Field.Label>
 
-        {form.loginActive && <Text>{t(FORM_LOGIN_ACTIVE)}</Text>}
-      </Form>
+              <Field.Control>
+                <Input
+                  type="number"
+                  name="limit"
+                  min={1}
+                  max={100}
+                  value={form.limit}
+                  onChange={(event) => form.setLimit(event.target.value)}
+                />
+              </Field.Control>
+            </Field>
+
+            <div className={styles.submit}>
+              <Button type="submit" disabled={form.submitDisabled}>
+                <Button.Label>{props.busy ? t(FORM_SUBMITTING) : t(FORM_SUBMIT)}</Button.Label>
+              </Button>
+            </div>
+          </div>
+
+          {props.busy && <Spinner label={t(FORM_LOADING)} />}
+
+          {form.loginActive && <Text>{t(FORM_LOGIN_ACTIVE)}</Text>}
+        </Form>
+      </div>
     </ArchiveSection>
   );
 }

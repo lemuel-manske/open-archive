@@ -1,6 +1,6 @@
-import type { Capture } from "../../types/capture";
+import type { Capture } from '../../types/capture';
 
-import type { CaptureGroup } from "./types";
+import type { CaptureGroup } from './types';
 
 function groupCaptures(captures: Capture[]): CaptureGroup[] {
   const groups = new Map<string, Capture[]>();

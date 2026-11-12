@@ -1,3 +1,5 @@
+import { Variant } from '@lemuel-manske/design-tokens';
+
 import { useTranslation } from '@lemuel-manske/i18n/react';
 
 import {
@@ -10,7 +12,7 @@ import {
   AUTH_SAVED,
 } from '../../i18n/message-ids';
 
-import { Alert, Button, ButtonVariant, Link, Spinner, Text } from '@lemuel-manske/components';
+import { Alert, Button, Link, Spinner, Text } from '@lemuel-manske/components';
 
 import type { LoginSession } from '../../types/capture';
 
@@ -53,7 +55,7 @@ function LoginSessionNotice({ session, busy, onCancel }: LoginSessionNoticeProps
         )}
 
         {session.status !== 'cancelling' && (
-          <Button variant={ButtonVariant.SECONDARY} disabled={busy} onClick={() => void onCancel()}>
+          <Button variant={Variant.SECONDARY} disabled={busy} onClick={() => void onCancel()}>
             <Button.Label>{t(AUTH_CANCEL)}</Button.Label>
           </Button>
         )}

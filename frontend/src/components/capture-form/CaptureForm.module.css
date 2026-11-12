@@ -1,25 +1,28 @@
-.form {
-  display: grid;
-  gap: var(--ui-space-24);
+.sheet {
   padding: clamp(20px, 3vw, 36px);
   background: var(--ui-color-surface);
   border-top: 2px solid var(--ui-action-primary);
 }
+
 .options {
   display: grid;
   grid-template-columns: minmax(0, 160px) minmax(0, 160px) minmax(0, 1fr);
   align-items: end;
   gap: var(--ui-space-16);
 }
-.options > button {
+
+.submit {
+  display: grid;
   justify-self: end;
   min-width: 200px;
 }
+
 @media (max-width: 760px) {
   .options {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .options > button {
+
+  .submit {
     grid-column: 1 / -1;
     justify-self: stretch;
     min-width: 0;

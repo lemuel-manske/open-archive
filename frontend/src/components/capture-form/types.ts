@@ -1,4 +1,4 @@
-import type { BrowserProfile, CaptureRequest, LoginSession } from "../../types/capture";
+import type { BrowserProfile, CaptureRequest, LoginSession } from '../../types/capture';
 
 interface CaptureFormProps {
   busy: boolean;

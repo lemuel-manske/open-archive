@@ -1,4 +1,4 @@
-import { useArchive } from "./useArchive";
+import { useArchive } from './useArchive';
 
 function ArchiveHook() {
   const archive = useArchive();
@@ -14,7 +14,7 @@ function ArchiveHook() {
 
       <button onClick={archive.closeReplay}>Fechar</button>
 
-      <p role="status">{archive.selectedCapture?.url ?? "Nenhuma captura selecionada."}</p>
+      <p role="status">{archive.selectedCapture?.url ?? 'Nenhuma captura selecionada.'}</p>
     </div>
   );
 }

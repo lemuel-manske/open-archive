@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
-import { createCapture, deleteCapture, listCaptures } from "../lib/api";
+import { createCapture, deleteCapture, listCaptures } from '../lib/api';
 
-import type { Capture, CaptureRequest } from "../types/capture";
+import type { Capture, CaptureRequest } from '../types/capture';
 
-import { useRequest } from "./useRequest";
+import { useRequest } from './useRequest';
 
 const POLL_INTERVAL = 3000;
 

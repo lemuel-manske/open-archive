@@ -1,5 +1,4 @@
 .layout {
-  --archive-rule: #c8c8b9;
   position: relative;
   isolation: isolate;
   min-height: 100vh;
@@ -23,7 +22,7 @@
   flex-wrap: wrap;
   gap: var(--ui-space-16);
   padding-block: var(--ui-space-24);
-  border-bottom: 1px solid var(--archive-rule);
+  border-bottom: 1px solid var(--ui-color-divider);
 }
 
 .identity {
@@ -31,6 +30,7 @@
   align-items: center;
   gap: var(--ui-space-24);
 }
+
 .header .brand {
   font-family: var(--ui-font-display);
   font-size: 2.25rem;
@@ -40,6 +40,7 @@
   color: var(--ui-color-text-primary);
   letter-spacing: -0.05em;
 }
+
 .brandMark {
   display: inline-block;
   margin-inline-start: 10px;
@@ -47,6 +48,7 @@
   vertical-align: middle;
   color: var(--ui-action-primary);
 }
+
 .institution {
   max-width: 16ch;
   font: 10px/1.5 var(--ui-font-mono);
@@ -54,22 +56,13 @@
   letter-spacing: 0.1em;
   color: var(--ui-color-text-secondary);
 }
+
 .navigation {
   display: flex;
   flex-wrap: wrap;
   gap: var(--ui-space-24);
 }
-.navigation a {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--ui-control-small);
-  font: 12px var(--ui-font-mono);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
-}
-.navigation a:hover {
-  color: var(--ui-color-text-primary);
-}
+
 .main {
   flex: 1;
   min-width: 0;
@@ -84,40 +77,30 @@
   margin-bottom: var(--ui-space-32);
 }
 
+.title {
+  max-width: 40rem;
+}
+
+.titleLine {
+  display: block;
+}
+
+.eyebrow {
+  max-width: 42ch;
+  margin-bottom: var(--ui-space-32);
+}
+
+.heroDescription {
+  max-width: 29ch;
+  margin-top: var(--ui-space-32);
+}
+
 .heroCopy {
   position: relative;
   z-index: 1;
   padding-bottom: var(--ui-space-48);
 }
-.heroCopy .eyebrow {
-  max-width: 42ch;
-  font: 10px/1.8 var(--ui-font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ui-action-primary);
-  margin-bottom: var(--ui-space-32);
-}
-.introduction h1.title {
-  max-width: 11ch;
-  font-size: clamp(4.5rem, 7.6vw, 7.4rem);
-  line-height: 0.94;
-  letter-spacing: -0.055em;
-}
-.title > span {
-  display: block;
-}
-.title > em {
-  display: block;
-  font-weight: 400;
-  color: var(--ui-action-primary);
-}
-.heroCopy .heroDescription {
-  max-width: 29ch;
-  margin-top: var(--ui-space-32);
-  font-size: clamp(1.1rem, 1.5vw, 1.4rem);
-  line-height: 1.45;
-  color: var(--ui-color-text-secondary);
-}
+
 .heroArt {
   min-width: 0;
   width: 112%;
@@ -126,21 +109,24 @@
   margin-left: -2%;
   transform: translateY(-8px);
 }
+
 .heroIndex {
   grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
   gap: var(--ui-space-16);
-  border-top: 1px solid var(--archive-rule);
+  border-top: 1px solid var(--ui-color-divider);
   padding-block: var(--ui-space-16);
   font: 10px/1.5 var(--ui-font-mono);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--ui-color-text-secondary);
 }
+
 .main > [role='alert'] {
   margin-block: var(--ui-space-24);
 }
+
 .footer {
   display: flex;
   align-items: center;
@@ -148,15 +134,13 @@
   justify-content: space-between;
   gap: var(--ui-space-24);
   padding-block: var(--ui-space-32);
-  border-top: 1px solid var(--archive-rule);
+  border-top: 1px solid var(--ui-color-divider);
 }
-.footer p {
-  color: var(--ui-color-text-secondary);
-  font-size: var(--ui-text-small);
-}
+
 .footerBrand {
   font: italic 1.8rem var(--ui-font-display);
 }
+
 .skipLink {
   position: absolute;
   top: var(--ui-space-8);
@@ -166,6 +150,7 @@
   background: var(--ui-color-background);
   transform: translateY(-200%);
 }
+
 .skipLink:focus {
   transform: translateY(0);
 }
@@ -174,9 +159,7 @@
   .identity {
     gap: var(--ui-space-16);
   }
-  .introduction h1.title {
-    font-size: clamp(4rem, 8.8vw, 6rem);
-  }
+
   .heroArt {
     width: 110%;
     margin-left: -5%;
@@ -187,46 +170,44 @@
   .identity .institution {
     display: none;
   }
+
   .header {
     padding-block: var(--ui-space-16);
   }
+
   .header .brand {
     font-size: 1.9rem;
   }
+
   .navigation {
     gap: var(--ui-space-16);
   }
+
   .introduction {
     grid-template-columns: minmax(0, 1fr);
     padding-top: var(--ui-space-48);
   }
+
   .heroCopy {
     padding-bottom: var(--ui-space-32);
   }
-  .introduction h1.title {
-    font-size: clamp(3.65rem, 13.5vw, 6.5rem);
-    max-width: 13ch;
-  }
-  .heroCopy .eyebrow {
-    margin-bottom: var(--ui-space-24);
-  }
-  .heroCopy .heroDescription {
-    margin-top: var(--ui-space-24);
-    max-width: 32ch;
-  }
+
   .heroArt {
     width: min(100%, 400px);
     justify-self: end;
     margin: -16px -6px 24px 0;
     transform: none;
   }
+
   .heroIndex {
     font-size: 9px;
     letter-spacing: 0.04em;
   }
+
   .heroIndex span:last-child {
     text-align: right;
   }
+
   .footer .institution {
     display: none;
   }
@@ -235,8 +216,5 @@
 @media (max-width: 480px) {
   .heroArt {
     display: none;
-  }
-  .navigation a {
-    font-size: 11px;
   }
 }

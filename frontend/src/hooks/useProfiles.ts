@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   cancelLoginSession,
@@ -6,22 +6,22 @@ import {
   deleteProfile,
   getLoginSession,
   listProfiles,
-} from "../lib/api";
+} from '../lib/api';
 
-import { isLoginActive } from "../lib/login";
+import { isLoginActive } from '../lib/login';
 
-import type { BrowserProfile, LoginSession } from "../types/capture";
+import type { BrowserProfile, LoginSession } from '../types/capture';
 
-import { useRequest } from "./useRequest";
+import { useRequest } from './useRequest';
 
 const POLL_INTERVAL = 2000;
 
-const SESSION_KEY = "openarchive.loginSession";
+const SESSION_KEY = 'openarchive.loginSession';
 
 function useProfiles() {
   const [profiles, setProfiles] = useState<BrowserProfile[]>([]);
 
-  const [profileId, setProfileId] = useState("");
+  const [profileId, setProfileId] = useState('');
 
   const [session, setSession] = useState<LoginSession | null>(null);
 
@@ -84,7 +84,7 @@ function useProfiles() {
 
   const loginActive = isLoginActive(session);
 
-  const completedProfileId = session?.status === "completed" ? session.profile_id : null;
+  const completedProfileId = session?.status === 'completed' ? session.profile_id : null;
 
   useEffect(() => {
     if (!sessionId || !loginActive) return;
@@ -158,7 +158,7 @@ function useProfiles() {
     const latest = currentSession.current;
 
     if (latest?._id === activeSession._id && isLoginActive(latest)) {
-      updateSession({ ...latest, status: "cancelling" });
+      updateSession({ ...latest, status: 'cancelling' });
     }
   }
 
@@ -175,7 +175,7 @@ function useProfiles() {
 
     setProfiles((current) => current.filter((profile) => profile._id !== id));
 
-    setProfileId((current) => (current === id ? "" : current));
+    setProfileId((current) => (current === id ? '' : current));
 
     return true;
   }

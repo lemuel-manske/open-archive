@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import type { Capture } from "../../types/capture";
+import type { Capture } from '../../types/capture';
 
-import { groupCaptures } from "./groupCaptures";
+import { groupCaptures } from './groupCaptures';
 
-import type { CaptureListProps } from "./types";
+import type { CaptureListProps } from './types';
 
 function useCaptureList({ captures, onDelete }: CaptureListProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
 
   const [captureToDelete, setCaptureToDelete] = useState<Capture | null>(null);
 

@@ -8,7 +8,7 @@ import type { AppLocale } from './i18n/translator';
 
 import { Alert, Theme } from '@lemuel-manske/components';
 
-import { openArchiveTheme } from './styles/theme';
+import { archiveTheme } from '@lemuel-manske/design-tokens';
 
 import { ArchiveLayout } from './components/archive-layout/ArchiveLayout';
 
@@ -74,7 +74,7 @@ function App({ locale = defaultLocale }: AppProps) {
 
   return (
     <AppI18n locale={locale}>
-      <Theme theme={openArchiveTheme}>
+      <Theme theme={archiveTheme}>
         <Archive />
       </Theme>
     </AppI18n>

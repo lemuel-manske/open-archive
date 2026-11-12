@@ -1,13 +1,13 @@
-import { expect, test } from "@lemuel-manske/config-playwright";
+import { expect, test } from '@lemuel-manske/config-playwright';
 
-import { runningLogin, savedProfile } from "../../types/capture.test-fixture";
+import { runningLogin, savedProfile } from '../../types/capture.test-fixture';
 
-import { CaptureAuthentication } from "./CaptureAuthentication";
+import { CaptureAuthentication } from './CaptureAuthentication';
 
-import { authenticationProps } from "./CaptureAuthentication.test-fixture";
+import { authenticationProps } from './CaptureAuthentication.test-fixture';
 
-test("CaptureAuthentication selects a saved profile", async ({ render }) => {
-  let selected = "";
+test('CaptureAuthentication selects a saved profile', async ({ render }) => {
+  let selected = '';
 
   const authentication = await render(
     <CaptureAuthentication
@@ -19,13 +19,13 @@ test("CaptureAuthentication selects a saved profile", async ({ render }) => {
     />,
   );
 
-  await authentication.getByRole("combobox").selectOption({ label: "example.org" });
+  await authentication.getByRole('combobox').selectOption({ label: 'example.org' });
 
   await expect.poll(() => selected).toBe(savedProfile._id);
 });
 
-test("CaptureAuthentication uses the capture URL for login", async ({ render }) => {
-  let started = "";
+test('CaptureAuthentication uses the capture URL for login', async ({ render }) => {
+  let started = '';
 
   const authentication = await render(
     <CaptureAuthentication
@@ -37,14 +37,14 @@ test("CaptureAuthentication uses the capture URL for login", async ({ render }) 
     />,
   );
 
-  await authentication.getByRole("button", { name: "Conectar nova conta" }).click();
+  await authentication.getByRole('button', { name: 'Conectar nova conta' }).click();
 
-  await authentication.getByRole("button", { name: "Iniciar login" }).click();
+  await authentication.getByRole('button', { name: 'Iniciar login' }).click();
 
   await expect.poll(() => started).toBe(authenticationProps.url);
 });
 
-test("CaptureAuthentication cancels an active login", async ({ render }) => {
+test('CaptureAuthentication cancels an active login', async ({ render }) => {
   let cancelled = false;
 
   const authentication = await render(
@@ -57,12 +57,12 @@ test("CaptureAuthentication cancels an active login", async ({ render }) => {
     />,
   );
 
-  await authentication.getByRole("button", { name: "Cancelar conexão" }).click();
+  await authentication.getByRole('button', { name: 'Cancelar conexão' }).click();
 
   await expect.poll(() => cancelled).toBe(true);
 });
 
-test("CaptureAuthentication asks before removing a profile", async ({ render }) => {
+test('CaptureAuthentication asks before removing a profile', async ({ render }) => {
   const authentication = await render(
     <CaptureAuthentication
       {...authenticationProps}
@@ -71,18 +71,18 @@ test("CaptureAuthentication asks before removing a profile", async ({ render }) 
     />,
   );
 
-  await authentication.getByRole("button", { name: "Remover conta" }).click();
+  await authentication.getByRole('button', { name: 'Remover conta' }).click();
 
-  await expect(authentication.getByRole("dialog", { name: "Remover conta salva?" })).toBeVisible();
+  await expect(authentication.getByRole('dialog', { name: 'Remover conta salva?' })).toBeVisible();
 });
 
-test("CaptureAuthentication exposes the login disclosure state", async ({ render }) => {
+test('CaptureAuthentication exposes the login disclosure state', async ({ render }) => {
   const authentication = await render(<CaptureAuthentication {...authenticationProps} />);
 
-  await authentication.getByRole("button", { name: "Conectar nova conta" }).click();
+  await authentication.getByRole('button', { name: 'Conectar nova conta' }).click();
 
-  await expect(authentication.getByRole("button", { name: "Fechar nova conexão" })).toHaveAttribute(
-    "aria-expanded",
-    "true",
+  await expect(authentication.getByRole('button', { name: 'Fechar nova conexão' })).toHaveAttribute(
+    'aria-expanded',
+    'true',
   );
 });

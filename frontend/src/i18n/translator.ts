@@ -11,9 +11,9 @@ type AppLocale = 'en' | 'pt-BR';
 function createAppTranslator(locale: AppLocale = defaultLocale) {
   return createTranslator({
     locale,
-    defaultLocale: 'en',
-    defaultMessages: en,
-    catalogs: { 'pt-BR': ptBR },
+    defaultLocale,
+    defaultMessages: ptBR,
+    catalogs: { en },
   });
 }
 

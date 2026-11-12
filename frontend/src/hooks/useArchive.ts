@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import { useCaptures } from "./useCaptures";
+import { useCaptures } from './useCaptures';
 
-import { useProfiles } from "./useProfiles";
+import { useProfiles } from './useProfiles';
 
 function useArchive() {
   const collection = useCaptures();

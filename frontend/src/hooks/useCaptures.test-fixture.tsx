@@ -1,4 +1,4 @@
-import { useCaptures } from "./useCaptures";
+import { useCaptures } from './useCaptures';
 
 function CapturesHook() {
   const collection = useCaptures();
@@ -10,7 +10,7 @@ function CapturesHook() {
       <button
         disabled={collection.creating}
         onClick={() =>
-          void collection.submit({ url: "https://new.example.org/", depth: 1, limit: 20 })
+          void collection.submit({ url: 'https://new.example.org/', depth: 1, limit: 20 })
         }
       >
         Criar
@@ -24,7 +24,7 @@ function CapturesHook() {
       </button>
 
       <p role="status">
-        {collection.loading ? "Carregando" : `${collection.captures.length} capturas`}
+        {collection.loading ? 'Carregando' : `${collection.captures.length} capturas`}
       </p>
 
       {collection.error && <p role="alert">{collection.error}</p>}

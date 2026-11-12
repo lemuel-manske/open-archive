@@ -4,39 +4,39 @@ import type {
   CaptureAccepted,
   CaptureRequest,
   LoginSession,
-} from "../types/capture";
+} from '../types/capture';
 
-const DELETE_METHOD = "DELETE";
-const POST_METHOD = "POST";
+const DELETE_METHOD = 'DELETE';
+const POST_METHOD = 'POST';
 
-const HEADERS = { "Content-Type": "application/json" };
+const HEADERS = { 'Content-Type': 'application/json' };
 
 function captures(limit?: number): string {
-  return "/captures" + (limit ? `?limit=${limit}` : "");
+  return '/captures' + (limit ? `?limit=${limit}` : '');
 }
 
 function capture(id: string): string {
-  return captures() + "/" + encodeURIComponent(id);
+  return captures() + '/' + encodeURIComponent(id);
 }
 
 function captureArchive(id: string): string {
-  return capture(id) + "/archive";
+  return capture(id) + '/archive';
 }
 
 function profiles(): string {
-  return "/profiles";
+  return '/profiles';
 }
 
 function profile(id: string): string {
-  return profiles() + "/" + encodeURIComponent(id);
+  return profiles() + '/' + encodeURIComponent(id);
 }
 
 function loginSessions(): string {
-  return "/login-sessions";
+  return '/login-sessions';
 }
 
 function loginSession(id: string): string {
-  return loginSessions() + "/" + encodeURIComponent(id);
+  return loginSessions() + '/' + encodeURIComponent(id);
 }
 
 async function assertOk(response: Response): Promise<Response> {

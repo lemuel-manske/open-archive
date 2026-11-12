@@ -1,8 +1,8 @@
-import type { Page } from "@lemuel-manske/config-playwright";
+import type { Page } from '@lemuel-manske/config-playwright';
 
-import type { BrowserProfile, Capture } from "./types/capture";
+import type { BrowserProfile, Capture } from './types/capture';
 
-import { completedCapture, runningLogin, savedProfile } from "./types/capture.test-fixture";
+import { completedCapture, runningLogin, savedProfile } from './types/capture.test-fixture';
 
 async function mockArchiveApi(
   page: Page,
@@ -13,11 +13,11 @@ async function mockArchiveApi(
 
   let profiles = initialProfiles;
 
-  await page.route("**/captures**", async (route) => {
+  await page.route('**/captures**', async (route) => {
     const request = route.request();
 
-    if (request.method() === "DELETE") {
-      const id = decodeURIComponent(new URL(request.url()).pathname.split("/").at(-1) ?? "");
+    if (request.method() === 'DELETE') {
+      const id = decodeURIComponent(new URL(request.url()).pathname.split('/').at(-1) ?? '');
 
       captures = captures.filter((capture) => capture._id !== id);
 
@@ -26,15 +26,15 @@ async function mockArchiveApi(
       return;
     }
 
-    if (request.method() === "POST") {
+    if (request.method() === 'POST') {
       const data = request.postDataJSON();
 
       captures = [
-        { ...completedCapture, ...data, _id: "new-capture", status: "pending" },
+        { ...completedCapture, ...data, _id: 'new-capture', status: 'pending' },
         ...captures,
       ];
 
-      await route.fulfill({ json: { id: "new-capture", status: "pending" } });
+      await route.fulfill({ json: { id: 'new-capture', status: 'pending' } });
 
       return;
     }
@@ -42,10 +42,10 @@ async function mockArchiveApi(
     await route.fulfill({ json: captures });
   });
 
-  await page.route("**/profiles**", async (route) => {
-    if (route.request().method() === "DELETE") {
+  await page.route('**/profiles**', async (route) => {
+    if (route.request().method() === 'DELETE') {
       const id = decodeURIComponent(
-        new URL(route.request().url()).pathname.split("/").at(-1) ?? "",
+        new URL(route.request().url()).pathname.split('/').at(-1) ?? '',
       );
 
       profiles = profiles.filter((profile) => profile._id !== id);
@@ -58,7 +58,7 @@ async function mockArchiveApi(
     await route.fulfill({ json: profiles });
   });
 
-  await page.route("**/login-sessions**", (route) => route.fulfill({ status: 404 }));
+  await page.route('**/login-sessions**', (route) => route.fulfill({ status: 404 }));
 }
 
 async function mockCompletedLogin(page: Page) {
@@ -70,14 +70,14 @@ async function mockCompletedLogin(page: Page) {
     releaseProfiles = resolve;
   });
 
-  await page.route("**/profiles**", async (route) => {
+  await page.route('**/profiles**', async (route) => {
     if (completed) await profileResponse;
 
     await route.fulfill({ json: completed ? [savedProfile] : [] });
   });
 
-  await page.route("**/login-sessions**", async (route) => {
-    if (route.request().method() === "POST") {
+  await page.route('**/login-sessions**', async (route) => {
+    if (route.request().method() === 'POST') {
       await route.fulfill({ json: runningLogin });
 
       return;
@@ -86,7 +86,7 @@ async function mockCompletedLogin(page: Page) {
     completed = true;
 
     await route.fulfill({
-      json: { ...runningLogin, status: "completed", profile_id: savedProfile._id },
+      json: { ...runningLogin, status: 'completed', profile_id: savedProfile._id },
     });
   });
 

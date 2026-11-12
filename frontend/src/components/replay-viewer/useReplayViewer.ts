@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-import { captureArchive } from "../../lib/api";
+import { captureArchive } from '../../lib/api';
 
-import type { ReplayViewerProps } from "./types";
+import type { ReplayViewerProps } from './types';
 
 function useReplayViewer({ capture }: ReplayViewerProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -17,8 +17,8 @@ function useReplayViewer({ capture }: ReplayViewerProps) {
       key: capture._id,
       source: captureArchive(capture._id),
       url: capture.url,
-      replayBase: "/replay/",
-      embed: "default",
+      replayBase: '/replay/',
+      embed: 'default',
     },
   };
 }

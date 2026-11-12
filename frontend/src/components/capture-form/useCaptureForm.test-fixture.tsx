@@ -1,8 +1,8 @@
-import type { CaptureFormProps } from "./types";
+import type { CaptureFormProps } from './types';
 
-import { captureFormProps } from "./CaptureForm.test-fixture";
+import { captureFormProps } from './CaptureForm.test-fixture';
 
-import { useCaptureForm } from "./useCaptureForm";
+import { useCaptureForm } from './useCaptureForm';
 
 function CaptureFormHook(props: Partial<CaptureFormProps>) {
   const form = useCaptureForm({ ...captureFormProps, ...props });

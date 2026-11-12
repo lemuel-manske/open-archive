@@ -120,6 +120,7 @@ test('CaptureList shows versions in a timeline with the newest first', async ({ 
   const versions = timeline.getByRole('listitem');
 
   await expect(versions).toHaveCount(2);
+
   await expect(versions.first().getByText('09/11/2026', { exact: true })).toBeVisible();
   await expect(versions.last().getByText('08/11/2026', { exact: true })).toBeVisible();
 });

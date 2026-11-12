@@ -1,4 +1,4 @@
-import type { Capture } from "../../types/capture";
+import type { Capture } from '../../types/capture';
 
 interface ReplayViewerProps {
   capture: Capture;

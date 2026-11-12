@@ -2,90 +2,177 @@
 import type { MessageId } from '@lemuel-manske/i18n';
 
 export const ART_ARCHIVE = 'art.archive' as MessageId<'art.archive'>;
+
 export const ART_CAPTION = 'art.caption' as MessageId<'art.caption'>;
+
 export const ART_CATEGORY = 'art.category' as MessageId<'art.category'>;
+
 export const ART_COPY = 'art.copy' as MessageId<'art.copy'>;
+
 export const ART_MEMORY = 'art.memory' as MessageId<'art.memory'>;
+
 export const ART_PRESERVE = 'art.preserve' as MessageId<'art.preserve'>;
+
 export const ART_SPECIMEN = 'art.specimen' as MessageId<'art.specimen'>;
+
 export const AUTH_ACCOUNT = 'auth.account' as MessageId<'auth.account'>;
+
 export const AUTH_ACCOUNT_FALLBACK = 'auth.account-fallback' as MessageId<'auth.account-fallback'>;
+
 export const AUTH_CANCEL = 'auth.cancel' as MessageId<'auth.cancel'>;
+
 export const AUTH_CANCELLING = 'auth.cancelling' as MessageId<'auth.cancelling'>;
+
 export const AUTH_CLOSE = 'auth.close' as MessageId<'auth.close'>;
+
 export const AUTH_CONNECT = 'auth.connect' as MessageId<'auth.connect'>;
+
 export const AUTH_DESCRIPTION = 'auth.description' as MessageId<'auth.description'>;
+
 export const AUTH_FAILED = 'auth.failed' as MessageId<'auth.failed'>;
+
 export const AUTH_INSTRUCTIONS = 'auth.instructions' as MessageId<'auth.instructions'>;
+
 export const AUTH_INVALID_URL = 'auth.invalid-url' as MessageId<'auth.invalid-url'>;
+
 export const AUTH_LEGEND = 'auth.legend' as MessageId<'auth.legend'>;
+
 export const AUTH_LOGIN_HINT = 'auth.login-hint' as MessageId<'auth.login-hint'>;
+
 export const AUTH_LOGIN_URL = 'auth.login-url' as MessageId<'auth.login-url'>;
+
 export const AUTH_OPEN = 'auth.open' as MessageId<'auth.open'>;
+
 export const AUTH_PREPARING = 'auth.preparing' as MessageId<'auth.preparing'>;
+
 export const AUTH_PUBLIC = 'auth.public' as MessageId<'auth.public'>;
+
 export const AUTH_REMOVE = 'auth.remove' as MessageId<'auth.remove'>;
+
 export const AUTH_REMOVE_CONFIRM = 'auth.remove-confirm' as MessageId<'auth.remove-confirm'>;
+
 export const AUTH_REMOVE_DESCRIPTION = 'auth.remove-description' as MessageId<'auth.remove-description'>;
+
 export const AUTH_REMOVE_TITLE = 'auth.remove-title' as MessageId<'auth.remove-title'>;
+
 export const AUTH_SAVED = 'auth.saved' as MessageId<'auth.saved'>;
+
 export const AUTH_START = 'auth.start' as MessageId<'auth.start'>;
+
 export const AUTH_STARTING = 'auth.starting' as MessageId<'auth.starting'>;
+
 export const CAPTURE_AUTHENTICATED = 'capture.authenticated' as MessageId<'capture.authenticated'>;
+
 export const CAPTURE_COMPLETED = 'capture.completed' as MessageId<'capture.completed'>;
+
 export const CAPTURE_DOWNLOAD = 'capture.download' as MessageId<'capture.download'>;
+
 export const CAPTURE_FAILED = 'capture.failed' as MessageId<'capture.failed'>;
+
 export const CAPTURE_PENDING = 'capture.pending' as MessageId<'capture.pending'>;
+
 export const CAPTURE_PLAY = 'capture.play' as MessageId<'capture.play'>;
+
 export const CAPTURE_PLAYING = 'capture.playing' as MessageId<'capture.playing'>;
+
 export const CAPTURE_RECORD_ID = 'capture.record-id' as MessageId<'capture.record-id'>;
+
 export const CAPTURE_REMOVE_CONFIRM = 'capture.remove-confirm' as MessageId<'capture.remove-confirm'>;
+
 export const CAPTURE_REMOVE_DESCRIPTION = 'capture.remove-description' as MessageId<'capture.remove-description'>;
+
 export const CAPTURE_REMOVE_FALLBACK = 'capture.remove-fallback' as MessageId<'capture.remove-fallback'>;
+
 export const CAPTURE_REMOVE_TITLE = 'capture.remove-title' as MessageId<'capture.remove-title'>;
+
 export const CAPTURE_RETRY = 'capture.retry' as MessageId<'capture.retry'>;
+
 export const CAPTURE_RUNNING = 'capture.running' as MessageId<'capture.running'>;
+
 export const COLLECTION_COUNT = 'collection.count' as MessageId<'collection.count'>;
+
 export const COLLECTION_DESCRIPTION = 'collection.description' as MessageId<'collection.description'>;
+
 export const COLLECTION_EMPTY = 'collection.empty' as MessageId<'collection.empty'>;
+
 export const COLLECTION_KICKER = 'collection.kicker' as MessageId<'collection.kicker'>;
+
 export const COLLECTION_LATEST = 'collection.latest' as MessageId<'collection.latest'>;
+
 export const COLLECTION_LOADING = 'collection.loading' as MessageId<'collection.loading'>;
+
 export const COLLECTION_NO_RESULTS = 'collection.no-results' as MessageId<'collection.no-results'>;
+
 export const COLLECTION_PLACEHOLDER = 'collection.placeholder' as MessageId<'collection.placeholder'>;
+
 export const COLLECTION_REFRESH = 'collection.refresh' as MessageId<'collection.refresh'>;
+
 export const COLLECTION_SEARCH = 'collection.search' as MessageId<'collection.search'>;
+
 export const COLLECTION_TIMELINE = 'collection.timeline' as MessageId<'collection.timeline'>;
+
 export const COLLECTION_TITLE = 'collection.title' as MessageId<'collection.title'>;
+
 export const COLLECTION_VERSIONS = 'collection.versions' as MessageId<'collection.versions'>;
+
 export const COMMON_CANCEL = 'common.cancel' as MessageId<'common.cancel'>;
+
 export const COMMON_DELETE = 'common.delete' as MessageId<'common.delete'>;
+
 export const COMMON_DELETE_ERROR = 'common.delete-error' as MessageId<'common.delete-error'>;
+
 export const COMMON_DELETING = 'common.deleting' as MessageId<'common.deleting'>;
+
 export const FORM_DEPTH = 'form.depth' as MessageId<'form.depth'>;
+
 export const FORM_DESCRIPTION = 'form.description' as MessageId<'form.description'>;
+
 export const FORM_KICKER = 'form.kicker' as MessageId<'form.kicker'>;
+
 export const FORM_LIMIT = 'form.limit' as MessageId<'form.limit'>;
+
 export const FORM_LOADING = 'form.loading' as MessageId<'form.loading'>;
+
 export const FORM_LOGIN_ACTIVE = 'form.login-active' as MessageId<'form.login-active'>;
+
 export const FORM_NAME = 'form.name' as MessageId<'form.name'>;
+
 export const FORM_SUBMIT = 'form.submit' as MessageId<'form.submit'>;
+
 export const FORM_SUBMITTING = 'form.submitting' as MessageId<'form.submitting'>;
+
 export const FORM_TITLE = 'form.title' as MessageId<'form.title'>;
+
 export const FORM_URL = 'form.url' as MessageId<'form.url'>;
+
 export const LAYOUT_ARCHIVE = 'layout.archive' as MessageId<'layout.archive'>;
+
 export const LAYOUT_COLLECTION = 'layout.collection' as MessageId<'layout.collection'>;
+
 export const LAYOUT_DESCRIPTION = 'layout.description' as MessageId<'layout.description'>;
+
 export const LAYOUT_DIVISION = 'layout.division' as MessageId<'layout.division'>;
+
 export const LAYOUT_DOCUMENT_TYPE = 'layout.document-type' as MessageId<'layout.document-type'>;
+
 export const LAYOUT_EYEBROW = 'layout.eyebrow' as MessageId<'layout.eyebrow'>;
+
 export const LAYOUT_FOOTER = 'layout.footer' as MessageId<'layout.footer'>;
+
 export const LAYOUT_HOME = 'layout.home' as MessageId<'layout.home'>;
+
 export const LAYOUT_INSTITUTION = 'layout.institution' as MessageId<'layout.institution'>;
+
 export const LAYOUT_NAVIGATION = 'layout.navigation' as MessageId<'layout.navigation'>;
+
 export const LAYOUT_PRINCIPLE = 'layout.principle' as MessageId<'layout.principle'>;
+
 export const LAYOUT_SKIP = 'layout.skip' as MessageId<'layout.skip'>;
+
 export const LAYOUT_TITLE_ENDING = 'layout.title-ending' as MessageId<'layout.title-ending'>;
+
 export const LAYOUT_TITLE_OPENING = 'layout.title-opening' as MessageId<'layout.title-opening'>;
+
 export const REPLAY_CLOSE = 'replay.close' as MessageId<'replay.close'>;
+
 export const REPLAY_TITLE = 'replay.title' as MessageId<'replay.title'>;

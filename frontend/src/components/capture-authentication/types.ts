@@ -1,4 +1,4 @@
-import type { BrowserProfile, LoginSession } from "../../types/capture";
+import type { BrowserProfile, LoginSession } from '../../types/capture';
 
 interface CaptureAuthenticationProps {
   url: string;

@@ -1,4 +1,4 @@
-type CaptureStatus = "pending" | "running" | "completed" | "failed";
+type CaptureStatus = 'pending' | 'running' | 'completed' | 'failed';
 
 interface Capture {
   _id: string;
@@ -29,13 +29,13 @@ interface BrowserProfile {
 }
 
 type LoginStatus =
-  | "pending"
-  | "starting"
-  | "running"
-  | "cancelling"
-  | "cancelled"
-  | "completed"
-  | "failed";
+  | 'pending'
+  | 'starting'
+  | 'running'
+  | 'cancelling'
+  | 'cancelled'
+  | 'completed'
+  | 'failed';
 
 interface LoginSession {
   _id: string;

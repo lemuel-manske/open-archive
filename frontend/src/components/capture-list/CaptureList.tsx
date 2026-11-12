@@ -1,3 +1,5 @@
+import { Emphasis, Size, Variant, Weight } from '@lemuel-manske/design-tokens';
+
 import { useLocale } from '../../i18n/useLocale';
 
 import { useTranslation } from '@lemuel-manske/i18n/react';
@@ -25,10 +27,9 @@ import {
 
 import {
   Button,
-  ButtonVariant,
-  Form,
+  Field,
   Heading,
-  HeadingSize,
+  Input,
   Link,
   Spinner,
   Text,
@@ -64,24 +65,26 @@ function CaptureList(props: CaptureListProps) {
       description={t(COLLECTION_DESCRIPTION)}
       sectionRef={collection.sectionRef}
       actions={
-        <Button variant={ButtonVariant.TERTIARY} onClick={() => void props.onRefresh()}>
+        <Button variant={Variant.TERTIARY} onClick={() => void props.onRefresh()}>
           <Button.Label>{t(COLLECTION_REFRESH)}</Button.Label>
         </Button>
       }
     >
       <div className={styles.tools}>
-        <Form.Field>
-          <Form.Field.Label>{t(COLLECTION_SEARCH)}</Form.Field.Label>
+        <div className={styles.search}>
+          <Field>
+            <Field.Label>{t(COLLECTION_SEARCH)}</Field.Label>
 
-          <Form.Field.Control>
-            <Form.Input
-              type="search"
-              value={collection.query}
-              onChange={(event) => collection.setQuery(event.target.value)}
-              placeholder={t(COLLECTION_PLACEHOLDER)}
-            />
-          </Form.Field.Control>
-        </Form.Field>
+            <Field.Control>
+              <Input
+                type="search"
+                value={collection.query}
+                onChange={(event) => collection.setQuery(event.target.value)}
+                placeholder={t(COLLECTION_PLACEHOLDER)}
+              />
+            </Field.Control>
+          </Field>
+        </div>
 
         <p role="status" className={styles.count}>
           {t(COLLECTION_COUNT, { sites: collection.totalGroups, captures: props.captures.length })}
@@ -97,16 +100,24 @@ function CaptureList(props: CaptureListProps) {
           {collection.groups.map((group) => (
             <section key={group.url} aria-label={group.url} className={styles.group}>
               <header className={styles.recordHeader}>
-                <Text className={styles.category}>{t(LAYOUT_DOCUMENT_TYPE)}</Text>
-                <Heading level={3} size={HeadingSize.SMALL} className={styles.domain}>
+                <Text size={Size.SMALL} tone="accent">
+                  {t(LAYOUT_DOCUMENT_TYPE)}
+                </Text>
+
+                <Heading level={3} size={Size.MEDIUM} weight={Weight.REGULAR}>
                   {new URL(group.url).hostname}
                 </Heading>
-                <Link href={group.url} target="_blank" className={styles.url}>
-                  {group.url}
-                </Link>
-                <Text className={styles.versionCount}>
+
+                <div className={styles.url}>
+                  <Link href={group.url} target="_blank" size={Size.SMALL}>
+                    {group.url}
+                  </Link>
+                </div>
+
+                <Text size={Size.SMALL} tone="secondary" emphasis={Emphasis.ITALIC}>
                   {t(COLLECTION_VERSIONS, { count: group.versions.length })}
                 </Text>
+
                 <dl className={styles.facts}>
                   <div>
                     <dt>{t(COLLECTION_LATEST)}</dt>

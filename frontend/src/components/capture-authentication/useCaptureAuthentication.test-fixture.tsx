@@ -1,8 +1,8 @@
-import type { CaptureAuthenticationProps } from "./types";
+import type { CaptureAuthenticationProps } from './types';
 
-import { authenticationProps } from "./CaptureAuthentication.test-fixture";
+import { authenticationProps } from './CaptureAuthentication.test-fixture';
 
-import { useCaptureAuthentication } from "./useCaptureAuthentication";
+import { useCaptureAuthentication } from './useCaptureAuthentication';
 
 function AuthenticationHook(props: Partial<CaptureAuthenticationProps>) {
   const authentication = useCaptureAuthentication({ ...authenticationProps, ...props });

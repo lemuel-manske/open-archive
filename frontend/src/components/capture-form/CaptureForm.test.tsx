@@ -1,16 +1,16 @@
-import { expect, test } from "@lemuel-manske/config-playwright";
+import { expect, test } from '@lemuel-manske/config-playwright';
 
-import type { CaptureRequest } from "../../types/capture";
+import type { CaptureRequest } from '../../types/capture';
 
-import { runningLogin } from "../../types/capture.test-fixture";
+import { runningLogin } from '../../types/capture.test-fixture';
 
-import { ArchiveLayout } from "../archive-layout/ArchiveLayout";
+import { ArchiveLayout } from '../archive-layout/ArchiveLayout';
 
-import { CaptureForm } from "./CaptureForm";
+import { CaptureForm } from './CaptureForm';
 
-import { captureFormProps } from "./CaptureForm.test-fixture";
+import { captureFormProps } from './CaptureForm.test-fixture';
 
-test("CaptureForm submits the capture options", async ({ render }) => {
+test('CaptureForm submits the capture options', async ({ render }) => {
   let request: CaptureRequest | null = null;
 
   const form = await render(
@@ -23,32 +23,32 @@ test("CaptureForm submits the capture options", async ({ render }) => {
     />,
   );
 
-  await form.getByRole("textbox", { name: "URL inicial" }).fill("https://example.org/");
+  await form.getByRole('textbox', { name: 'URL inicial' }).fill('https://example.org/');
 
-  await form.getByRole("spinbutton", { name: "Profundidade" }).fill("2");
+  await form.getByRole('spinbutton', { name: 'Profundidade' }).fill('2');
 
-  await form.getByRole("button", { name: "Arquivar URL" }).click();
+  await form.getByRole('button', { name: 'Arquivar URL' }).click();
 
   await expect
     .poll(() => request)
-    .toEqual({ url: "https://example.org/", depth: 2, limit: 20, profile_id: null });
+    .toEqual({ url: 'https://example.org/', depth: 2, limit: 20, profile_id: null });
 });
 
-test("CaptureForm preserves native required validation", async ({ render }) => {
+test('CaptureForm preserves native required validation', async ({ render }) => {
   const form = await render(<CaptureForm {...captureFormProps} />);
 
-  await form.getByRole("button", { name: "Arquivar URL" }).click();
+  await form.getByRole('button', { name: 'Arquivar URL' }).click();
 
-  await expect(form.getByRole("textbox", { name: "URL inicial" })).toBeFocused();
+  await expect(form.getByRole('textbox', { name: 'URL inicial' })).toBeFocused();
 });
 
-test("CaptureForm blocks submission while connecting an account", async ({ render }) => {
+test('CaptureForm blocks submission while connecting an account', async ({ render }) => {
   const form = await render(<CaptureForm {...captureFormProps} session={runningLogin} />);
 
-  await expect(form.getByRole("button", { name: "Arquivar URL" })).toBeDisabled();
+  await expect(form.getByRole('button', { name: 'Arquivar URL' })).toBeDisabled();
 });
 
-test("CaptureForm has no accessibility violations", async ({ render, page }) => {
+test('CaptureForm has no accessibility violations', async ({ render, page }) => {
   await render(
     <ArchiveLayout>
       <CaptureForm {...captureFormProps} />

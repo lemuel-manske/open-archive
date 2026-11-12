@@ -1,10 +1,12 @@
+import { Variant } from '@lemuel-manske/design-tokens';
+
 import { useTranslation } from '@lemuel-manske/i18n/react';
 
 import { AUTH_CLOSE, AUTH_CONNECT, AUTH_INVALID_URL } from '../../i18n/message-ids';
 
 import { useEffect, useRef, useState } from 'react';
 
-import { ButtonVariant, useButton } from '@lemuel-manske/components';
+import type { ButtonProps } from '@lemuel-manske/components';
 
 import { useAccessibility } from '@lemuel-manske/utils';
 
@@ -43,12 +45,14 @@ function useCaptureAuthentication({
 
   const targetUrl = loginUrl.trim() || url.trim();
 
-  const connectButton = useButton({
+  const connectButton = {
     children: connecting ? t(AUTH_CLOSE) : t(AUTH_CONNECT),
-    variant: ButtonVariant.TERTIARY,
+    variant: Variant.TERTIARY,
     disabled: busy || active,
     onClick: () => setConnecting((current) => !current),
-  });
+    'aria-expanded': connecting,
+    'aria-controls': connectionId,
+  } satisfies ButtonProps;
 
   useEffect(() => {
     if (!profileToDelete && returnFocus.current) {
@@ -99,7 +103,7 @@ function useCaptureAuthentication({
   return {
     connecting,
     connectionId,
-    connectButton: { ...connectButton, 'aria-expanded': connecting, 'aria-controls': connectionId },
+    connectButton,
     loginUrl,
     setLoginUrl,
     error,

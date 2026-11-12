@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import type { SyntheticEvent } from "react";
+import type { SyntheticEvent } from 'react';
 
-import { isLoginActive } from "../../lib/login";
+import { isLoginActive } from '../../lib/login';
 
-import type { CaptureFormProps } from "./types";
+import type { CaptureFormProps } from './types';
 
 function useCaptureForm({ busy, profileBusy, session, profileId, onSubmit }: CaptureFormProps) {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState('');
 
-  const [depth, setDepth] = useState("1");
+  const [depth, setDepth] = useState('1');
 
-  const [limit, setLimit] = useState("20");
+  const [limit, setLimit] = useState('20');
 
   const loginActive = isLoginActive(session);
 
@@ -29,7 +29,7 @@ function useCaptureForm({ busy, profileBusy, session, profileId, onSubmit }: Cap
       profile_id: profileId || null,
     });
 
-    if (result) setUrl("");
+    if (result) setUrl('');
   }
 
   return { url, setUrl, depth, setDepth, limit, setLimit, loginActive, submitDisabled, submit };

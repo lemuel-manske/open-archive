@@ -1,8 +1,10 @@
+import { Variant } from '@lemuel-manske/design-tokens';
+
 import { useTranslation } from '@lemuel-manske/i18n/react';
 
 import { COMMON_CANCEL, COMMON_DELETING } from '../../i18n/message-ids';
 
-import { Alert, Button, ButtonVariant, Dialog, Spinner, Text } from '@lemuel-manske/components';
+import { Alert, Button, Dialog, Spinner, Text } from '@lemuel-manske/components';
 
 import type { ConfirmationDialogProps } from './types';
 
@@ -29,7 +31,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps) {
       {confirmation.pending && <Spinner label={t(COMMON_DELETING)} />}
 
       <Button
-        variant={ButtonVariant.SECONDARY}
+        variant={Variant.SECONDARY}
         disabled={confirmation.pending}
         onClick={() => void confirmation.confirm()}
       >

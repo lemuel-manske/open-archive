@@ -15,8 +15,8 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--ui-color-text-primary);
-  outline-offset: 3px;
+  outline: var(--ui-state-focus-width) solid var(--ui-state-focus);
+  outline-offset: var(--ui-state-focus-offset);
 }
 
 ::selection {

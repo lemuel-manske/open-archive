@@ -1,3 +1,5 @@
+import { Size, Variant } from '@lemuel-manske/design-tokens';
+
 import { useTranslation } from '@lemuel-manske/i18n/react';
 
 import {
@@ -16,7 +18,7 @@ import {
   AUTH_STARTING,
 } from '../../i18n/message-ids';
 
-import { Alert, ButtonVariant, Form } from '@lemuel-manske/components';
+import { Alert, Button, Combobox, Field, Fieldset, Input } from '@lemuel-manske/components';
 
 import { ConfirmationDialog } from '../confirmation-dialog/ConfirmationDialog';
 
@@ -34,44 +36,46 @@ function CaptureAuthentication(props: CaptureAuthenticationProps) {
   const authentication = useCaptureAuthentication(props);
 
   return (
-    <Form.Fieldset className={styles.fieldset}>
-      <Form.Fieldset.Legend className={styles.legend}>{t(AUTH_LEGEND)}</Form.Fieldset.Legend>
+    <Fieldset appearance="divided">
+      <Fieldset.Legend size={Size.SMALL} tone="accent">
+        {t(AUTH_LEGEND)}
+      </Fieldset.Legend>
 
       <div className={styles.content}>
-        <Form.Field disabled={props.busy || authentication.active}>
-          <Form.Field.Label>{t(AUTH_ACCOUNT)}</Form.Field.Label>
+        <Field disabled={props.busy || authentication.active}>
+          <Field.Label>{t(AUTH_ACCOUNT)}</Field.Label>
 
-          <Form.Field.Control>
-            <Form.Combobox
+          <Field.Control>
+            <Combobox
               ref={authentication.profileControlRef}
               value={props.profileId}
               onChange={(event) => props.onSelect(event.target.value)}
               name="profile"
             >
-              <Form.Combobox.Option value="">{t(AUTH_PUBLIC)}</Form.Combobox.Option>
+              <Combobox.Option value="">{t(AUTH_PUBLIC)}</Combobox.Option>
 
               {props.profiles.map((profile) => (
-                <Form.Combobox.Option key={profile._id} value={profile._id}>
+                <Combobox.Option key={profile._id} value={profile._id}>
                   {new URL(profile.url).hostname}
-                </Form.Combobox.Option>
+                </Combobox.Option>
               ))}
-            </Form.Combobox>
-          </Form.Field.Control>
+            </Combobox>
+          </Field.Control>
 
-          <Form.Field.Description>{t(AUTH_DESCRIPTION)}</Form.Field.Description>
-        </Form.Field>
+          <Field.Description>{t(AUTH_DESCRIPTION)}</Field.Description>
+        </Field>
 
         <div className={styles.actions}>
-          <button {...authentication.connectButton} />
+          <Button {...authentication.connectButton} />
 
           {props.profileId && (
-            <Form.Button
-              variant={ButtonVariant.TERTIARY}
+            <Button
+              variant={Variant.TERTIARY}
               disabled={props.busy || authentication.active}
               onClick={authentication.requestRemoval}
             >
-              <Form.Button.Label>{t(AUTH_REMOVE)}</Form.Button.Label>
-            </Form.Button>
+              <Button.Label>{t(AUTH_REMOVE)}</Button.Label>
+            </Button>
           )}
         </div>
 
@@ -80,30 +84,28 @@ function CaptureAuthentication(props: CaptureAuthenticationProps) {
           hidden={!authentication.connecting || authentication.active}
         >
           <div className={styles.connection}>
-            <Form.Field
-              disabled={props.busy || !authentication.connecting || authentication.active}
-            >
-              <Form.Field.Label>{t(AUTH_LOGIN_URL)}</Form.Field.Label>
+            <Field disabled={props.busy || !authentication.connecting || authentication.active}>
+              <Field.Label>{t(AUTH_LOGIN_URL)}</Field.Label>
 
-              <Form.Field.Control>
-                <Form.Input
+              <Field.Control>
+                <Input
                   type="url"
                   placeholder={props.url.trim() || 'https://site.com/login'}
                   value={authentication.loginUrl}
                   onChange={(event) => authentication.setLoginUrl(event.target.value)}
                 />
-              </Form.Field.Control>
+              </Field.Control>
 
-              <Form.Field.Description>{t(AUTH_LOGIN_HINT)}</Form.Field.Description>
-            </Form.Field>
+              <Field.Description>{t(AUTH_LOGIN_HINT)}</Field.Description>
+            </Field>
 
-            <Form.Button
-              variant={ButtonVariant.SECONDARY}
+            <Button
+              variant={Variant.SECONDARY}
               disabled={!authentication.canStart}
               onClick={() => void authentication.start()}
             >
-              <Form.Button.Label>{props.busy ? t(AUTH_STARTING) : t(AUTH_START)}</Form.Button.Label>
-            </Form.Button>
+              <Button.Label>{props.busy ? t(AUTH_STARTING) : t(AUTH_START)}</Button.Label>
+            </Button>
           </div>
         </div>
 
@@ -122,7 +124,7 @@ function CaptureAuthentication(props: CaptureAuthenticationProps) {
         onConfirm={authentication.remove}
         onClose={authentication.closeRemoval}
       />
-    </Form.Fieldset>
+    </Fieldset>
   );
 }
 

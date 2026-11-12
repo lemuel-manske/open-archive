@@ -1,41 +1,41 @@
-import { expect, test } from "@lemuel-manske/config-playwright";
+import { expect, test } from '@lemuel-manske/config-playwright';
 
-import { mockArchiveApi } from "../App.test-fixture";
+import { mockArchiveApi } from '../App.test-fixture';
 
-import { CapturesHook } from "./useCaptures.test-fixture";
+import { CapturesHook } from './useCaptures.test-fixture';
 
-test("useCaptures loads the collection", async ({ render, page }) => {
+test('useCaptures loads the collection', async ({ render, page }) => {
   await mockArchiveApi(page);
 
   const collection = await render(<CapturesHook />);
 
-  await expect(collection.getByRole("status")).toHaveText("1 capturas");
+  await expect(collection.getByRole('status')).toHaveText('1 capturas');
 });
 
-test("useCaptures refreshes the collection after creating a capture", async ({ render, page }) => {
+test('useCaptures refreshes the collection after creating a capture', async ({ render, page }) => {
   await mockArchiveApi(page, []);
 
   const collection = await render(<CapturesHook />);
 
-  await collection.getByRole("button", { name: "Criar" }).click();
+  await collection.getByRole('button', { name: 'Criar' }).click();
 
-  await expect(collection.getByRole("status")).toHaveText("1 capturas");
+  await expect(collection.getByRole('status')).toHaveText('1 capturas');
 });
 
-test("useCaptures removes a deleted capture from its collection", async ({ render, page }) => {
+test('useCaptures removes a deleted capture from its collection', async ({ render, page }) => {
   await mockArchiveApi(page);
 
   const collection = await render(<CapturesHook />);
 
-  await collection.getByRole("button", { name: "Excluir" }).click();
+  await collection.getByRole('button', { name: 'Excluir' }).click();
 
-  await expect(collection.getByRole("status")).toHaveText("0 capturas");
+  await expect(collection.getByRole('status')).toHaveText('0 capturas');
 });
 
-test("useCaptures exposes API failures", async ({ render, page }) => {
-  await page.route("**/captures**", (route) => route.fulfill({ status: 500 }));
+test('useCaptures exposes API failures', async ({ render, page }) => {
+  await page.route('**/captures**', (route) => route.fulfill({ status: 500 }));
 
   const collection = await render(<CapturesHook />);
 
-  await expect(collection.getByRole("alert")).toContainText("HTTP 500");
+  await expect(collection.getByRole('alert')).toContainText('HTTP 500');
 });

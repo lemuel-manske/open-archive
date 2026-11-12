@@ -1,6 +1,6 @@
-import type { CaptureListProps } from "./types";
+import type { CaptureListProps } from './types';
 
-import { completedCapture } from "../../types/capture.test-fixture";
+import { completedCapture } from '../../types/capture.test-fixture';
 
 const captureListProps: CaptureListProps = {
   captures: [completedCapture],

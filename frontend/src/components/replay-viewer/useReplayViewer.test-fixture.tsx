@@ -1,6 +1,6 @@
-import { completedCapture } from "../../types/capture.test-fixture";
+import { completedCapture } from '../../types/capture.test-fixture';
 
-import { useReplayViewer } from "./useReplayViewer";
+import { useReplayViewer } from './useReplayViewer';
 
 function ReplayViewerHook() {
   const viewer = useReplayViewer({ capture: completedCapture, onClose: () => {} });

@@ -6,153 +6,95 @@
   gap: var(--ui-space-24);
   margin-bottom: var(--ui-space-32);
 }
-.tools > div {
+
+.search {
   flex: 1 1 280px;
   max-width: 460px;
 }
+
 .count {
   margin: 0;
   max-width: 38ch;
   color: var(--ui-color-text-secondary);
   font: 11px/1.7 var(--ui-font-mono);
 }
+
 .groups {
   display: grid;
 }
+
 .group {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: clamp(24px, 6vw, 88px);
   min-width: 0;
   padding-block: var(--ui-space-32);
-  border-top: 1px solid var(--archive-rule, #c8c8b9);
+  border-top: var(--ui-border-width) solid var(--ui-color-divider);
 }
+
 .recordHeader {
   display: grid;
   align-content: start;
   gap: var(--ui-space-12);
   min-width: 0;
 }
-.recordHeader .category {
-  font: 10px/1.5 var(--ui-font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--ui-action-primary);
-}
-.recordHeader h3.domain {
-  font-size: clamp(1.7rem, 3vw, 2.2rem);
-  font-weight: var(--ui-weight-regular);
-  letter-spacing: -0.025em;
-  overflow-wrap: anywhere;
-}
+
 .url {
-  width: fit-content;
   max-width: 100%;
-  font: 11px/1.8 var(--ui-font-mono);
   overflow-wrap: anywhere;
 }
-.recordHeader .versionCount {
-  margin-top: var(--ui-space-8);
-  font-style: italic;
-  color: var(--ui-color-text-secondary);
-}
+
 .facts {
   margin: 0;
   font: 10px/1.8 var(--ui-font-mono);
   color: var(--ui-color-text-secondary);
 }
+
 .facts dt {
   text-transform: uppercase;
   letter-spacing: 0.07em;
 }
+
 .facts dd {
   margin: 3px 0 0;
 }
-.timelineItem {
-  min-width: 0;
-}
+
 .itemHeader {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   gap: var(--ui-space-16);
 }
-.date {
-  font-size: var(--ui-text-heading-small);
-  line-height: 1.2;
-  overflow-wrap: anywhere;
-}
+
 .version,
 .metadata {
   display: grid;
   gap: var(--ui-space-8);
   min-width: 0;
 }
+
 .version {
   padding-bottom: var(--ui-space-16);
-  border-bottom: 1px solid var(--archive-rule, #c8c8b9);
 }
-.version p.time {
-  font: 11px/1.7 var(--ui-font-mono);
-  color: var(--ui-color-text-secondary);
-}
-.metadata p.recordId {
-  font: 10px/1.6 var(--ui-font-mono);
-  letter-spacing: 0.04em;
-  color: var(--ui-color-text-secondary);
-  overflow-wrap: anywhere;
-}
-.metadata .error {
-  color: var(--ui-state-danger);
-  overflow-wrap: anywhere;
-}
-.captureStatus,
-.itemHeader span.status {
-  font: 10px/1.5 var(--ui-font-mono);
-  color: var(--ui-action-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.035em;
-  padding-block: 3px;
-}
-.captureStatus {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ui-space-8);
-}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--ui-space-8);
 }
-a.download {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--ui-control-small);
-  font-size: var(--ui-text-small);
-  margin-inline: var(--ui-space-8);
-}
-.actions button.remove {
-  color: var(--ui-state-danger);
-  margin-inline-start: var(--ui-space-8);
-}
+
 @media (max-width: 700px) {
   .group {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--ui-space-24);
   }
+
   .recordHeader {
     gap: var(--ui-space-8);
   }
+
   .tools {
     margin-bottom: var(--ui-space-24);
-  }
-  .facts {
-    max-width: 100%;
-  }
-}
-@media (max-width: 380px) {
-  .actions button.remove {
-    margin-inline-start: 0;
   }
 }

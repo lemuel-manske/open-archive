@@ -1,9 +1,9 @@
-import type { CaptureFormProps } from "./types";
+import type { CaptureFormProps } from './types';
 
 const captureFormProps: CaptureFormProps = {
   busy: false,
   profiles: [],
-  profileId: "",
+  profileId: '',
   session: null,
   profileBusy: false,
   onSelectProfile: () => {},

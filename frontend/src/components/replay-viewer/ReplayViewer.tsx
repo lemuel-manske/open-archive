@@ -4,7 +4,8 @@ import { REPLAY_CLOSE, REPLAY_TITLE } from '../../i18n/message-ids';
 
 import { createElement } from 'react';
 
-import { Button, ButtonVariant } from '@lemuel-manske/components';
+import { Button } from '@lemuel-manske/components';
+import { Variant } from '@lemuel-manske/design-tokens';
 
 import { ArchiveSection } from '../archive-section/ArchiveSection';
 
@@ -26,7 +27,7 @@ function ReplayViewer(props: ReplayViewerProps) {
       description={props.capture.url}
       sectionRef={viewer.sectionRef}
       actions={
-        <Button variant={ButtonVariant.SECONDARY} onClick={props.onClose}>
+        <Button variant={Variant.SECONDARY} onClick={props.onClose}>
           <Button.Label>{t(REPLAY_CLOSE)}</Button.Label>
         </Button>
       }
