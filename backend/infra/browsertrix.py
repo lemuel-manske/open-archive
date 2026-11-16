@@ -80,4 +80,7 @@ class BrowsertrixCrawler(Crawler):
 
             return path
         finally:
-            container.remove(force=True)
+            try:
+                print(container.logs().decode("utf-8", errors="replace"))
+            finally:
+                container.remove(force=True)
